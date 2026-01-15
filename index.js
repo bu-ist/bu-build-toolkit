@@ -9,10 +9,18 @@ const createWebpackConfig = require( './config/webpack.config' );
 const path = require( 'path' );
 
 /**
- * Default SASS include paths for BU themes.
+ * Default SASS load paths for BU themes.
  * These are commonly used node_modules paths that themes typically need.
+ * 
+ * Note: sass-loader v16+ uses 'loadPaths' (modern API) instead of 'includePaths' (legacy API)
+ * 
+ * The '.' and './node_modules' paths are included for backward compatibility with existing
+ * imports that reference 'node_modules/...' directly in their @import statements.
+ * New code should prefer importing without the 'node_modules/' prefix.
  */
-const defaultIncludePaths = [
+const defaultLoadPaths = [
+	'.', // Allow imports like: @import 'node_modules/@fortawesome/...'
+	'./node_modules', // Allow imports like: @import '@fortawesome/...'
 	'./node_modules/normalize-scss/sass',
 	'./node_modules/mathsass/dist/',
 	'./node_modules/@bostonuniversity',
@@ -23,7 +31,7 @@ const defaultIncludePaths = [
  * These settings have been tested and refined for optimal performance.
  */
 const defaultSassOptions = {
-	includePaths: defaultIncludePaths,
+	loadPaths: defaultLoadPaths,
 	quietDeps: true, // Don't print warnings caused by dependencies
 	silenceDeprecations: [
 		'legacy-js-api',
@@ -50,7 +58,7 @@ const defaultStatsConfig = {
  * @param {Object} options.themeEntryPoints Entry points for theme-specific files (required)
  * @param {string} options.sassCompiler SASS compiler to use (default: 'sass-embedded')
  * @param {Object} options.statsConfig Webpack stats configuration (optional)
- * @param {Array} options.includePaths Additional SASS include paths (merged with defaults)
+ * @param {Array} options.loadPaths Additional SASS load paths (merged with defaults)
  * @param {Object} options.sassOptions Custom SASS options (merged with defaults)
  * @return {Array} Array of webpack configurations
  */
@@ -59,18 +67,18 @@ function createConfig( options = {} ) {
 		themeEntryPoints = {},
 		sassCompiler = 'sass-embedded',
 		statsConfig = defaultStatsConfig,
-		includePaths = [],
+		loadPaths = [],
 		sassOptions = {},
 	} = options;
 
-	// Merge custom include paths with defaults
-	const mergedIncludePaths = [ ...defaultIncludePaths, ...includePaths ];
+	// Merge custom load paths with defaults
+	const mergedLoadPaths = [ ...defaultLoadPaths, ...loadPaths ];
 
 	// Merge custom SASS options with defaults
 	const mergedSassOptions = {
 		...defaultSassOptions,
 		...sassOptions,
-		includePaths: mergedIncludePaths,
+		loadPaths: mergedLoadPaths,
 	};
 
 	return createWebpackConfig( {
@@ -94,7 +102,7 @@ function resolveThemePath( relativePath ) {
 module.exports = {
 	createConfig,
 	createWebpackConfig,
-	defaultIncludePaths,
+	defaultLoadPaths,
 	defaultSassOptions,
 	defaultStatsConfig,
 	resolveThemePath,
