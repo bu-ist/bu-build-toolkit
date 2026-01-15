@@ -1,0 +1,56 @@
+{
+  "name": "example-theme",
+  "version": "1.0.0",
+  "description": "Example theme using BU Build Toolkit",
+  "private": true,
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "devDependencies": {
+    "@bostonuniversity/bu-build-toolkit": "^0.1.0"
+  },
+  "scripts": {
+    "__SETUP__": "=========================================================================",
+    "postinstall": "cd node_modules/@bostonuniversity/bu-build-toolkit && composer install",
+    "check-engines": "bu-build check-engines",
+    "check-licenses": "bu-build check-licenses",
+    "__DEVELOPMENT__": "===================================================================",
+    "start": "bu-build start",
+    "watch:scripts": "bu-build watch:scripts",
+    "watch:theme-json": "bu-build watch:theme-json",
+    "__BLOCKS__": "=========================================================================",
+    "new-id-block": "cd src/blocks && npx @wordpress/create-block@latest --template @bostonuniversity/create-block-templates --no-plugin",
+    "new-wp-block": "cd src/blocks && npx @wordpress/create-block@latest --no-plugin",
+    "__CLEANUP__": "=======================================================================",
+    "format": "bu-build format",
+    "lint": "bu-build lint",
+    "lint:css": "bu-build lint:css",
+    "lint:js": "bu-build lint:js",
+    "lint:js:fix": "bu-build lint:js:fix",
+    "lint:md": "bu-build lint:md",
+    "lint:pkg": "bu-build lint:pkg",
+    "lint:php": "bu-build lint:php",
+    "lint:php:all": "bu-build lint:php:all",
+    "__TESTING__": "=======================================================================",
+    "test:e2e": "bu-build test:e2e",
+    "test:unit": "bu-build test:unit",
+    "__BUILD__": "=========================================================================",
+    "build": "bu-build build",
+    "build:scripts": "bu-build build:scripts",
+    "build:theme-json": "bu-build build:theme-json",
+    "build:i18n": "bu-build build:i18n",
+    "build:clean": "bu-build build:clean",
+    "build:wpi18n": "bu-build build:wpi18n",
+    "build:wpmakepot": "bu-build build:wpmakepot",
+    "build:version": "bu-build build:version"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/@bostonuniversity/bu-build-toolkit/config/.eslintrc.json"
+  },
+  "stylelint": {
+    "extends": "./node_modules/@bostonuniversity/bu-build-toolkit/config/.stylelintrc"
+  },
+  "svgo": "./node_modules/@bostonuniversity/bu-build-toolkit/config/svgo.config.js"
+}
