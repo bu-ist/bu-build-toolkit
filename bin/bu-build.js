@@ -19,6 +19,9 @@
  * bu-build lint:js --fix
  */
 
+const path = require( 'path' );
+const fs = require( 'fs' );
+
 // Import command modules organized by functionality
 const watchCommands = require( './commands/watch' );
 const buildCommands = require( './commands/build' );
@@ -26,6 +29,30 @@ const lintCommands = require( './commands/lint' );
 const testCommands = require( './commands/test' );
 const i18nCommands = require( './commands/i18n' );
 const miscCommands = require( './commands/misc' );
+
+// Read version from package.json
+const packageJsonPath = path.resolve( __dirname, '../package.json' );
+const packageJson = JSON.parse( fs.readFileSync( packageJsonPath, 'utf8' ) );
+
+/**
+ * Display CLI Header
+ *
+ * Shows the toolkit name, version, and package identifier.
+ * This provides visual confirmation of which tool is running.
+ * Uses BU Red (#CC0000) for branding.
+ */
+function displayHeader() {
+	console.log( '\x1b[38;2;204;0;0m' );
+	console.log( '▗▄▄▖  ▗▄▖  ▗▄▄▖▗▄▄▄▖▗▄▖ ▗▖  ▗▖    ▗▖ ▗▖▗▖  ▗▖▗▄▄▄▖▗▖  ▗▖▗▄▄▄▖▗▄▄▖  ▗▄▄▖▗▄▄▄▖▗▄▄▄▖▗▖  ▗▖' );
+	console.log( '▐▌ ▐▌▐▌ ▐▌▐▌     █ ▐▌ ▐▌▐▛▚▖▐▌    ▐▌ ▐▌▐▛▚▖▐▌  █  ▐▌  ▐▌▐▌   ▐▌ ▐▌▐▌     █    █   ▝▚▞▘ ' );
+	console.log( '▐▛▀▚▖▐▌ ▐▌ ▝▀▚▖  █ ▐▌ ▐▌▐▌ ▝▜▌    ▐▌ ▐▌▐▌ ▝▜▌  █  ▐▌  ▐▌▐▛▀▀▘▐▛▀▚▖ ▝▀▚▖  █    █    ▐▌  ' );
+	console.log( '▐▙▄▞▘▝▚▄▞▘▗▄▄▞▘  █ ▝▚▄▞▘▐▌  ▐▌    ▝▚▄▞▘▐▌  ▐▌▗▄█▄▖ ▝▚▞▘ ▐▙▄▄▖▐▌ ▐▌▗▄▄▞▘▗▄█▄▖  █    ▐▌  ' );
+	console.log( '\x1b[0m' );
+	console.log( '\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m' );
+	console.log( `\x1b[36m\x1b[1m  BU Build Tools - Version ${packageJson.version}\x1b[0m` );
+	console.log( `\x1b[36m  ${packageJson.name}\x1b[0m` );
+	console.log( '\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n' );
+}
 
 // Parse command-line arguments
 // argv[0] = node, argv[1] = script path, argv[2] = command, argv[3+] = args
@@ -88,16 +115,23 @@ const commands = {
  * Main Execution Function
  *
  * Handles the CLI lifecycle:
- * 1. Validates command exists
- * 2. Routes to appropriate handler
- * 3. Catches and reports errors
- * 4. Sets appropriate exit codes
+ * 1. Displays header (only once per build session)
+ * 2. Validates command exists
+ * 3. Routes to appropriate handler
+ * 4. Catches and reports errors
+ * 5. Sets appropriate exit codes
  *
  * Exit codes:
  * - 0: Success
  * - 1: Error (command not found or execution failed)
  */
 async function main() {
+	// Display header once per session using environment variable
+	if ( command && command !== 'help' && command !== '--help' && command !== '-h' && ! process.env.BU_BUILD_HEADER_SHOWN ) {
+		displayHeader();
+		process.env.BU_BUILD_HEADER_SHOWN = 'true';
+	}
+
 	// Show help if no command provided or help explicitly requested
 	if ( ! command || command === 'help' || command === '--help' || command === '-h' ) {
 		miscCommands.help();

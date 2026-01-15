@@ -14,7 +14,6 @@ const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const { mergeWithRules } = require( 'webpack-merge' );
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
-const FriendlyErrorsWebpackPlugin = require( '@soda/friendly-errors-webpack-plugin' );
 const path = require( 'path' );
 
 /**
@@ -22,7 +21,6 @@ const path = require( 'path' );
  *
  * @param {Object} options                   Configuration options
  * @param {Object} options.themeEntryPoints  Entry points for theme-specific files
- * @param {string} options.sassCompiler      SASS compiler to use (default: 'sass-embedded')
  * @param {Object} options.statsConfig       Webpack stats configuration
  * @param {Object} options.customSassOptions Custom SASS options including includePaths
  * @return {Array} Array of webpack configurations (blocks and theme)
@@ -30,8 +28,11 @@ const path = require( 'path' );
 function createWebpackConfig( options ) {
 	const {
 		themeEntryPoints = {},
-		sassCompiler = 'sass-embedded',
-		statsConfig = 'errors-only',
+		statsConfig = {
+			preset: 'errors-only',
+			colors: true,
+			errorStack: false, // Disable verbose stack traces in errors (webpack 5.105.0+)
+		},
 		customSassOptions = {},
 	} = options;
 
@@ -50,11 +51,6 @@ function createWebpackConfig( options ) {
 				path.resolve( __dirname, '../node_modules' ), // Toolkit's node_modules
 			],
 		},
-		plugins: [
-			new FriendlyErrorsWebpackPlugin( {
-				clearConsole: false,
-			} ),
-		],
 		module: {
 			rules: [
 				{
@@ -76,7 +72,6 @@ function createWebpackConfig( options ) {
 							options: {
 								sourceMap: true, // Always build the sourcemap, even for production.
 								sassOptions: customSassOptions,
-								implementation: require( sassCompiler ),
 							},
 						},
 					],
@@ -120,7 +115,6 @@ function createWebpackConfig( options ) {
 							options: {
 								sourceMap: true, // Always build the sourcemap, even for production.
 								sassOptions: customSassOptions,
-								implementation: require( sassCompiler ),
 							},
 						},
 					],
@@ -135,9 +129,6 @@ function createWebpackConfig( options ) {
 				( plugin ) => ! ( plugin instanceof CopyWebpackPlugin )
 			),
 			new RemoveEmptyScriptsPlugin(), // Add new plugin that removes empty script files for CSS only entries
-			new FriendlyErrorsWebpackPlugin( {
-				clearConsole: false,
-			} ),
 		],
 	};
 
@@ -159,7 +150,6 @@ function createWebpackConfig( options ) {
 				},
 			},
 			stats: 'replace',
-			plugins: 'append',
 		} )( defaultConfig, blocksConfig ),
 		mergeWithRules( {
 			entry: 'merge',
