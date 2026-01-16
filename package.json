@@ -23,22 +23,31 @@
     "toolkit"
   ],
   "author": "Boston University",
-  "license": "GPL-2.0-or-later",
+  "contributors": [
+    {
+      "name": "Dakota Chichester",
+      "email": "acketon@bu.edu"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/bu-ist/bu-build-toolkit"
   },
   "dependencies": {
-    "@wordpress/scripts": "^27.1.0",
-    "@wordpress/stylelint-config": "^21.33.0",
-    "node-wp-i18n": "^1.2.7",
-    "nodemon": "^3.0.2",
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^5.0.5",
-    "webpack-merge": "^5.10.0",
-    "webpack-remove-empty-scripts": "^1.0.4"
+    "@wordpress/scripts": "~31.2.0",
+    "@wordpress/stylelint-config": "~21.33.0",
+    "copy-webpack-plugin": "~13.0.1",
+    "node-wp-i18n": "~1.2.7",
+    "nodemon": "~3.0.2",
+    "npm-run-all": "~4.1.5",
+    "rimraf": "~5.0.5",
+    "webpack-merge": "~5.10.0",
+    "webpack-remove-empty-scripts": "~1.0.4"
   },
   "optionalDependencies": {
-    "sass-embedded": "^1.97.2"
+    "sass-embedded": "~1.97.2"
+  },
+  "devDependencies": {
+    "@wordpress/eslint-plugin": "~23.0.0"
   }
 }
