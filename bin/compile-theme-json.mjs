@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 /**
  * Theme.json Compiler
@@ -67,7 +68,7 @@ const outputFile = path.join( cwd, 'theme.json' );
  */
 async function tryImport( basePath ) {
 	const extensions = [ '.mjs', '.js' ];
-	
+
 	for ( const ext of extensions ) {
 		const filePath = basePath + ext;
 		if ( fs.existsSync( filePath ) ) {
@@ -76,12 +77,15 @@ async function tryImport( basePath ) {
 				const module = await import( fileUrl );
 				return module.default || {};
 			} catch ( error ) {
-				console.error( `\x1b[31mError importing ${ filePath }:\x1b[0m`, error.message );
+				console.error(
+					`\x1b[31mError importing ${ filePath }:\x1b[0m`,
+					error.message
+				);
 				return null;
 			}
 		}
 	}
-	
+
 	return null;
 }
 
@@ -108,7 +112,9 @@ async function tryImport( basePath ) {
 async function compileThemeJson() {
 	// Check if source directory exists - if not, skip compilation
 	if ( ! fs.existsSync( sourceDir ) ) {
-		console.log( 'No src/theme-json directory found. Skipping theme.json compilation.' );
+		console.log(
+			'No src/theme-json directory found. Skipping theme.json compilation.'
+		);
 		return;
 	}
 
@@ -123,8 +129,12 @@ async function compileThemeJson() {
 
 	// Check if we got at least one module
 	if ( config === null && settings === null && styles === null ) {
-		console.error( '\x1b[31mNo theme.json source files found in src/theme-json/\x1b[0m' );
-		console.error( '\x1b[31mExpected: config.mjs, settings.mjs, styles.mjs (or .js)\x1b[0m' );
+		console.error(
+			'\x1b[31mNo theme.json source files found in src/theme-json/\x1b[0m'
+		);
+		console.error(
+			'\x1b[31mExpected: config.mjs, settings.mjs, styles.mjs (or .js)\x1b[0m'
+		);
 		process.exit( 1 );
 	}
 
@@ -141,7 +151,9 @@ async function compileThemeJson() {
 	// Write to theme.json
 	fs.writeFileSync( outputFile, json );
 
-	console.log( `\x1b[32m✓ theme.json compiled successfully to ${ outputFile }\x1b[0m` );
+	console.log(
+		`\x1b[32m✓ theme.json compiled successfully to ${ outputFile }\x1b[0m`
+	);
 }
 
 // Run the compiler

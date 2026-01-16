@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 /**
  * Version Update Script
@@ -41,11 +42,11 @@ const path = require( 'path' );
  */
 function getPackageInfo() {
 	const packagePath = path.join( process.cwd(), 'package.json' );
-	
+
 	if ( ! fs.existsSync( packagePath ) ) {
 		throw new Error( 'package.json not found in current directory' );
 	}
-	
+
 	try {
 		return require( packagePath );
 	} catch ( error ) {
@@ -58,12 +59,12 @@ function getPackageInfo() {
  *
  * Creates a WordPress theme header comment block with metadata from package.json.
  *
- * @param {Object} packageInfo - Package.json contents
- * @param {string} packageInfo.name - Theme name/slug
- * @param {string} packageInfo.version - Theme version
+ * @param {Object} packageInfo             - Package.json contents
+ * @param {string} packageInfo.name        - Theme name/slug
+ * @param {string} packageInfo.version     - Theme version
  * @param {string} packageInfo.description - Theme description
- * @param {string} packageInfo.repository - Repository URL
- * @param {string} packageInfo.homepage - Homepage URL
+ * @param {string} packageInfo.repository  - Repository URL
+ * @param {string} packageInfo.homepage    - Homepage URL
  * @return {string} Formatted CSS header comment
  */
 function generateCssHeader( packageInfo ) {
@@ -95,17 +96,20 @@ Template: responsive-framework-3x
  * Updates a CSS file by replacing its content with the new header.
  * For style.css, replaces the entire file. For built CSS, prepends to existing content.
  *
- * @param {string} filePath - Path to file to update (relative to cwd)
- * @param {string} header - CSS header to write/prepend
+ * @param {string}  filePath    - Path to file to update (relative to cwd)
+ * @param {string}  header      - CSS header to write/prepend
  * @param {boolean} prependOnly - If true, prepend header to existing content
  * @return {Promise<void>}
  */
 async function updateFile( filePath, header, prependOnly = false ) {
 	const fullPath = path.join( process.cwd(), filePath );
-	
+
 	// Check if file exists
 	if ( ! fs.existsSync( fullPath ) ) {
-		console.log( `\x1b[33m⚠️  Skipping ${ filePath } (file not found)\x1b[0m` );
+		// eslint-disable-next-line no-console
+		console.log(
+			`\x1b[33m⚠️  Skipping ${ filePath } (file not found)\x1b[0m`
+		);
 		return;
 	}
 
@@ -119,10 +123,12 @@ async function updateFile( filePath, header, prependOnly = false ) {
 			// Replace entire file with header
 			fs.writeFileSync( fullPath, header, 'utf-8' );
 		}
-		
+
 		console.log( `\x1b[32m✓ Updated ${ filePath }\x1b[0m` );
 	} catch ( error ) {
-		console.error( `\x1b[31m✗ Failed to update ${ filePath }: ${ error.message }\x1b[0m` );
+		console.error(
+			`\x1b[31m✗ Failed to update ${ filePath }: ${ error.message }\x1b[0m`
+		);
 		throw error;
 	}
 }
@@ -148,7 +154,9 @@ async function main() {
 
 		console.log( '\n\x1b[32m✓ Version update complete!\x1b[0m' );
 	} catch ( error ) {
-		console.error( `\n\x1b[31m✗ Version update failed: ${ error.message }\x1b[0m` );
+		console.error(
+			`\n\x1b[31m✗ Version update failed: ${ error.message }\x1b[0m`
+		);
 		process.exit( 1 );
 	}
 }
