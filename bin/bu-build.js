@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 /**
  * BU Build Toolkit CLI
@@ -25,10 +26,10 @@ const fs = require( 'fs' );
 // Import command modules organized by functionality
 const watchCommands = require( './commands/watch' );
 const buildCommands = require( './commands/build' );
-const lintCommands = require( './commands/lint' );
-const testCommands = require( './commands/test' );
-const i18nCommands = require( './commands/i18n' );
-const miscCommands = require( './commands/misc' );
+const lintCommands  = require( './commands/lint' );
+const testCommands  = require( './commands/test' );
+const i18nCommands  = require( './commands/i18n' );
+const miscCommands  = require( './commands/misc' );
 
 // Read version from package.json
 const packageJsonPath = path.resolve( __dirname, '../package.json' );
@@ -54,10 +55,26 @@ function displayHeader() {
 	console.log( '\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n' );
 }
 
-// Parse command-line arguments
-// argv[0] = node, argv[1] = script path, argv[2] = command, argv[3+] = args
-const command = process.argv[ 2 ];
-const args = process.argv.slice( 3 );
+/**
+ * Parse Command-Line Arguments
+ * 
+ * When running a command like `bu-build build --production`,
+ * command = 'build'
+ * args = ['--production']
+ * 
+ * `process.argv` contains an array of the command-line arguments:
+ * - process.argv[0]: Node.js executable path
+ * - process.argv[1]: Path to this script (bu-build.js)
+ * - process.argv[2]: The command to execute (e.g., 'build', 'start')
+ * - process.argv[3+]: Any additional arguments passed to the command
+ *
+ * @example
+ * bu-build lint:js --fix
+ * command = 'lint:js'
+ * args = ['--fix']
+ */
+const command = process.argv[ 2 ]; // Get the command to run.
+const args = process.argv.slice( 3 ); // Get all arguments after the command
 
 /**
  * Command Registry
@@ -127,7 +144,9 @@ const commands = {
  */
 async function main() {
 	// Display header once per session using environment variable
-	if ( command && command !== 'help' && command !== '--help' && command !== '-h' && ! process.env.BU_BUILD_HEADER_SHOWN ) {
+	// This prevents duplicate headers in nested child commands spawned
+	// from a single bu-build invocation.
+	if ( ! process.env.BU_BUILD_HEADER_SHOWN ) {
 		displayHeader();
 		process.env.BU_BUILD_HEADER_SHOWN = 'true';
 	}
@@ -140,16 +159,17 @@ async function main() {
 
 	// Check if command exists
 	if ( ! commands[ command ] ) {
-		console.error( `Unknown command: ${ command }` );
-		console.error( `Run 'bu-build help' to see available commands.` );
+		console.error( `\x1b[31mUnknown command: ${ command }\x1b[0m` );
+		console.error( `\x1b[31mRun 'bu-build help' to see available commands.\x1b[0m` );
+		console.log( '\x1b[0m' );
 		process.exit( 1 );
 	}
 
-	// Execute the command
+	// Execute the command the user requested.
 	try {
 		await commands[ command ]( args );
 	} catch ( error ) {
-		console.error( `Error running command: ${ error.message }` );
+		console.error( `\x1b[31mError running command: ${ error.message }\x1b[0m` );
 		process.exit( 1 );
 	}
 }

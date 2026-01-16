@@ -70,13 +70,16 @@ async function tryImport( basePath ) {
 	const extensions = [ '.mjs', '.js' ];
 
 	for ( const ext of extensions ) {
-		const filePath = basePath + ext;
+		const filePath = basePath + ext; // Create full file path with extension.
+		
+		// Check if the file exists before attempting to import.
 		if ( fs.existsSync( filePath ) ) {
 			try {
-				const fileUrl = pathToFileURL( filePath ).href;
-				const module = await import( fileUrl );
-				return module.default || {};
+				const fileUrl = pathToFileURL( filePath ).href; // Convert to file:// URL.
+				const module = await import( fileUrl ); // Dynamically import the module.
+				return module.default || {}; // Return default export or empty object.
 			} catch ( error ) {
+				// Log import errors but continue trying other extensions.
 				console.error(
 					`\x1b[31mError importing ${ filePath }:\x1b[0m`,
 					error.message
@@ -86,13 +89,14 @@ async function tryImport( basePath ) {
 		}
 	}
 
+	// If no file was found or imported, return null.
 	return null;
 }
 
 /**
  * Compile Theme.json
  *
- * Main compilation function that orchestrates the theme.json build process.
+ * Main compilation function that handles the theme.json build process.
  *
  * Process Flow:
  * 1. Verify src/theme-json directory exists
@@ -113,7 +117,7 @@ async function compileThemeJson() {
 	// Check if source directory exists - if not, skip compilation
 	if ( ! fs.existsSync( sourceDir ) ) {
 		console.log(
-			'No src/theme-json directory found. Skipping theme.json compilation.'
+			'\x1b[33mNo src/theme-json directory found. Skipping theme.json compilation.\x1b[0m'
 		);
 		return;
 	}
