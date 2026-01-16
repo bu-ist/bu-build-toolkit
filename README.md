@@ -1,14 +1,18 @@
 # BU Build Toolkit
 
-A centralized set of build tools for compiling WordPress themes and plugins, built on top of `@wordpress/scripts` and webpack. This toolkit maintains all build dependencies and configuration in one place, eliminating the need to manage these in each individual theme or plugin repository.
+A centralized set of build tools for compiling WordPress themes and plugins, built on top of `@wordpress/scripts` and Webpack. This toolkit maintains all build dependencies and configuration in one place, eliminating the need to manage these in each individual theme or plugin repository.
+
+Each major version of this Toolkit should be well documented with what setup is needed in each theme or plugin repo as well as instructions on how to update a repo to the next major version of this toolkit. 
+
+The toolkit should NOT make changes that would break or alter the generated output of a theme or plugin except in major versions.
 
 ## Features
 
 - **Centralized Dependencies**: All build-related dependencies (`@wordpress/scripts`, webpack, loaders, plugins) are managed in this single package
-- **Tested Configuration**: Webpack, Babel, ESLint, and Stylelint configurations that have been refined and tested across BU projects
+- **Tested Configuration**: Webpack, Babel, ESLint, and Stylelint.
 - **Easy Integration**: Themes/plugins only need minimal configuration (entry points and theme-specific settings)
 - **Consistent Builds**: Ensures all BU themes and plugins use the same build process and tooling versions
-- **Fast SASS Compilation**: Uses `sass-embedded` for optimized build performance
+
 
 ## Installation
 
@@ -55,25 +59,44 @@ module.exports = createConfig( {
 
 ### 2. Configure your package.json
 
-The toolkit provides a `bu-build` CLI that handles all common build tasks. Your theme's package.json becomes much simpler:
+The toolkit provides a `bu-build` CLI that handles all common build tasks. Add these scripts to your theme's package.json:
 
 ```json
 {
   "scripts": {
+    "postinstall": "cd node_modules/@bostonuniversity/bu-build-toolkit && composer install",
+    "check-engines": "bu-build check-engines",
+    "check-licenses": "bu-build check-licenses",
     "start": "bu-build start",
-    "build": "bu-build build",
+    "watch:scripts": "bu-build watch:scripts",
+    "watch:theme-json": "bu-build watch:theme-json",
     "format": "bu-build format",
     "lint": "bu-build lint",
     "lint:css": "bu-build lint:css",
     "lint:js": "bu-build lint:js",
+    "lint:js:fix": "bu-build lint:js:fix",
+    "lint:md": "bu-build lint:md",
+    "lint:pkg": "bu-build lint:pkg",
+    "lint:php": "bu-build lint:php",
+    "lint:php:all": "bu-build lint:php:all",
     "test:e2e": "bu-build test:e2e",
-    "test:unit": "bu-build test:unit"
+    "test:unit": "bu-build test:unit",
+    "build": "bu-build build",
+    "build:scripts": "bu-build build:scripts",
+    "build:theme-json": "bu-build build:theme-json",
+    "build:i18n": "bu-build build:i18n",
+    "build:clean": "bu-build build:clean",
+    "build:wpi18n": "bu-build build:wpi18n",
+    "build:wpmakepot": "bu-build build:wpmakepot",
+    "build:version": "bu-build build:version"
   },
   "devDependencies": {
     "@bostonuniversity/bu-build-toolkit": "^0.1.0"
   }
 }
 ```
+
+**Note:** The `postinstall` script ensures PHP dependencies (like PHP_CodeSniffer for linting) are installed automatically.
 
 **Theme.json Compilation** (automatic, no script needed):
 
@@ -110,7 +133,7 @@ The toolkit includes config files that you can reference or copy:
 
 **PHPCS**: Extend from `node_modules/@bostonuniversity/bu-build-toolkit/config/.phpcs.xml.dist` (see PHP Linting Setup below)
 
-Or reference them directly in your package.json:
+Or reference the defaults provided by this toolkit directly in your package.json:
 
 ```json
 {
@@ -135,7 +158,7 @@ const { createConfig } = require( '@bostonuniversity/bu-build-toolkit' );
 
 module.exports = createConfig( {
 	themeEntryPoints: { /* your entries */ },
-	includePaths: [
+	loadPaths: [
 		'./custom/sass/path',
 	],
 } );
@@ -157,8 +180,18 @@ module.exports = createConfig( {
 ```
 
 ### Different SASS Compiler
+By default `sass-loader` (within Webpack) will automatically choose which SASS 
+compiler to use. If `sass-embedded` is set as an `optionalDependency` package and
+works on your system it will be used. `sass-embedded` is usually faster as it runs
+as native code on your system instead of a Javascript implementation. However it
+does not work on all operating systems and CPU's. 
 
-Switch between `sass-embedded` (default, faster) and `sass`:
+There are times where a theme developer may need to force a specific SASS
+compiler: `sass` (dart-sass in JS), `sass-embedded` (dart-sass but native code), or
+`node-sass`. If so you can specify the `sassCompiler` to use and the toolkit will
+pass this to `sass-loader`. 
+
+Switch between `sass-embedded` (default, faster) and `sass`, or `node-sass`:
 
 ```javascript
 const { createConfig } = require( '@bostonuniversity/bu-build-toolkit' );
@@ -211,9 +244,11 @@ module.exports = createConfig( {
 - **Webpack**: Optimized for WordPress block development and theme builds
 
 ### Default SASS Include Paths
-- `node_modules/normalize-scss/sass`
-- `node_modules/mathsass/dist/`
-- `node_modules/@bostonuniversity`
+- `.` - Allow imports like: `@import 'node_modules/@fortawesome/...'`
+- `./node_modules` - Allow imports like: `@import '@fortawesome/...'`
+- `./node_modules/normalize-scss/sass`
+- `./node_modules/mathsass/dist/`
+- `./node_modules/@bostonuniversity`
 
 ## CLI Commands
 
@@ -366,9 +401,26 @@ If you're migrating from a theme that has its own build configuration:
 
 ## Troubleshooting
 
+### Error Messages in the Terminal
+
+Webpack can produce very long error messages and logging at times. This toolkit attempts to reduce the
+amount that is output but occassionally large amounts of source code will be output to the terminal when
+a build error occurs. The default Terminal scroll buffer or scrollback setting might not be large enough
+and you may see the terminal output be overridden. 
+
+This can mean you don't see the entire error message as it has been replaced with source code of limited 
+utility. 
+
+You can make this better by editing the settings for the terminal scrollback or buffer in your IDE or 
+Terminal app so you can scroll back and see the entire output from Webpack. 
+
+See: [VSCode Terminal Buffer Setting](https://code.visualstudio.com/docs/terminal/basics#_navigating-the-buffer)
+
 ### SASS Include Paths Not Working
 
-Ensure you're passing `includePaths` correctly in your config, or use the theme's `node_modules` path.
+Ensure you're passing `loadPaths` correctly in your config, or use the theme's `node_modules` path.
+
+**Note:** sass-loader v16+ uses `loadPaths` (modern API) instead of `includePaths` (legacy API).
 
 ### Blocks Not Building
 
@@ -377,11 +429,3 @@ The toolkit automatically detects blocks via `block.json` files. Ensure your blo
 ### Build Performance
 
 The toolkit uses `sass-embedded` by default for faster builds on macOS. If you experience issues, switch to `sass` via the `sassCompiler` option.
-
-## License
-
-GPL-2.0-or-later
-
-## Support
-
-For issues or questions, please open an issue on the GitHub repository.
