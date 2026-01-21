@@ -16,7 +16,7 @@
  * @module commands/test
  */
 
-const { runWpScripts } = require( '../utils/run' );
+import { runWpScripts } from '../utils/run.js';
 
 /**
  * Run End-to-End Tests
@@ -93,7 +93,7 @@ async function testUnit( args ) {
 	await runWpScripts( 'test-unit-js', args );
 }
 
-module.exports = {
+export {
 	testE2e,
 	testUnit,
 };

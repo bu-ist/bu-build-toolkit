@@ -20,17 +20,23 @@
  * bu-build lint:js --fix
  */
 
-const path = require( 'path' );
-const fs = require( 'fs' );
-const chalk = require( 'chalk' );
+import path from 'path';
+import fs from 'fs';
+import chalk from 'chalk';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// ESM equivalents of __filename and __dirname
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = dirname( __filename );
 
 // Import command modules organized by functionality
-const watchCommands = require( './commands/watch' );
-const buildCommands = require( './commands/build' );
-const lintCommands = require( './commands/lint' );
-const testCommands = require( './commands/test' );
-const i18nCommands = require( './commands/i18n' );
-const miscCommands = require( './commands/misc' );
+import * as watchCommands from './commands/watch.js';
+import * as buildCommands from './commands/build.js';
+import * as lintCommands from './commands/lint.js';
+import * as testCommands from './commands/test.js';
+import * as i18nCommands from './commands/i18n.js';
+import * as miscCommands from './commands/misc.js';
 
 // Read version from package.json
 const packageJsonPath = path.resolve( __dirname, '../package.json' );

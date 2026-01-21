@@ -1,11 +1,12 @@
 /**
  * Example webpack.config.js for a theme using BU Build Toolkit
- * 
+ *
  * This is what a theme's webpack.config.js would look like when using the toolkit.
  * Place this file in the root of your theme directory.
+ * 
+ * This uses CommonJS with async dynamic import() to load the ESM toolkit.
+ * This approach avoids needing "type": "module" in your theme's package.json.
  */
-
-const { createConfig } = require( '@bostonuniversity/bu-build-toolkit' );
 
 /**
  * Theme Entry Points
@@ -26,11 +27,11 @@ const themeEntryPoints = {
 	'css/editor-styles': './src/scss/editor-styles.scss',
 	'css/block-editor': './src/scss/block-editor.scss',
 	'css/classic-editor': './src/scss/classic-editor.scss',
-	
+
 	// Blocks
 	'css/blocks/blocks-bundled': './src/blocks/blocks-bundled.scss',
 	'css/blocks/blocks-common': './src/blocks/blocks-common.scss',
-	
+
 	// Scripts
 	'js/theme': './src/js/theme.js',
 	'js/admin': './src/js/admin.js',
@@ -40,16 +41,22 @@ const themeEntryPoints = {
 
 /**
  * Export the webpack configuration.
- * The createConfig function handles all the webpack setup.
+ * 
+ * Since the toolkit is ESM, we use dynamic import() to load it.
+ * Webpack supports async configs that return promises.
  */
-module.exports = createConfig( {
-	themeEntryPoints,
-	// Optional: Add custom SASS include paths
-	// includePaths: [ './custom/path' ],
-	// Optional: Override SASS compiler (default is 'sass-embedded')
-	// sassCompiler: 'sass',
-	// Optional: Custom webpack stats configuration
-	// statsConfig: { preset: 'verbose', colors: true },
-	// Optional: Custom SASS options
-	// sassOptions: { outputStyle: 'compressed' },
-} );
+module.exports = ( async () => {
+	const { createConfig } = await import( '@bostonuniversity/bu-build-toolkit' );
+	
+	return createConfig( {
+		themeEntryPoints,
+		// Optional: Add custom SASS include paths
+		// loadPaths: [ './custom/path' ],
+		// Optional: Override SASS compiler (default is 'sass-embedded')
+		// sassCompiler: 'sass',
+		// Optional: Custom webpack stats configuration
+		// statsConfig: { preset: 'verbose', colors: true },
+		// Optional: Custom SASS options
+		// sassOptions: { outputStyle: 'compressed' },
+	} );
+} )();

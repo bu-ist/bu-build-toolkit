@@ -29,7 +29,7 @@
  * You typically only need to add presets/plugins for specialized syntax or features
  * not covered above (e.g., Flow types, experimental proposals, etc.)
  */
-module.exports = {
+export default {
 	presets: [
 		// Keep WordPress's default configuration (TypeScript, JSX, polyfills, etc.)
 		'@wordpress/babel-preset-default',

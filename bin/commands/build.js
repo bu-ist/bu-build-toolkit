@@ -21,16 +21,22 @@
  * @module commands/build
  */
 
-const path = require( 'path' );
-const fs = require( 'fs' );
-const chalk = require( 'chalk' );
-const {
+import path from 'path';
+import fs from 'fs';
+import chalk from 'chalk';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import {
 	runWpScriptsFiltered,
 	runWpScripts,
 	runNpmRunAll,
 	getThemePackage,
 	runCommand,
-} = require( '../utils/run' );
+} from '../utils/run.js';
+
+// ESM equivalents of __filename and __dirname
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = dirname( __filename );
 
 /**
  * Build Production Assets
@@ -188,7 +194,7 @@ async function buildVersion( args ) {
 	await runCommand( 'node', [ versionScript ] );
 }
 
-module.exports = {
+export {
 	build,
 	buildScripts,
 	buildThemeJson,

@@ -12,8 +12,8 @@
  */
 
 // Loads the base webpack configuration for BU themes and plugins.
-const createWebpackConfig = require( './config/webpack.config' );
-const path = require( 'path' );
+import createWebpackConfig from './config/webpack.config.js';
+import path from 'path';
 
 /**
  * Default SASS load paths for BU themes.
@@ -122,7 +122,7 @@ function resolveThemePath( relativePath ) {
 	return path.resolve( process.cwd(), relativePath );
 }
 
-module.exports = {
+export {
 	createConfig,
 	createWebpackConfig,
 	defaultLoadPaths,

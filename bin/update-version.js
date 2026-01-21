@@ -29,9 +29,12 @@
  * @see https://developer.wordpress.org/themes/basics/main-stylesheet-style-css/
  */
 
-const fs = require( 'fs' );
-const path = require( 'path' );
-const chalk = require( 'chalk' );
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import { createRequire } from 'module';
+
+const require = createRequire( import.meta.url );
 
 /**
  * Get Package Information

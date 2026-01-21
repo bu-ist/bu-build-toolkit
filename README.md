@@ -22,6 +22,16 @@ In your theme or plugin:
 npm install --save-dev @bostonuniversity/bu-build-toolkit
 ```
 
+## Requirements
+
+This toolkit uses **ESM (ECMAScript Modules)** internally, but your theme's `webpack.config.js` can use **CommonJS** with async dynamic imports (see example above). This avoids needing `"type": "module"` in your theme's package.json.
+
+Create these files:
+- `webpack.config.mjs` (instead of webpack.config.js)
+- `babel.config.mjs` (instead of babel.config.js) - if you have custom Babel config
+
+Alternatively, you can add `"type": "module"` to your `package.json`, but this makes all `.js` files in your theme use ESM, which may cause issues with existing frontend scripts.
+
 ## Usage
 
 ### 1. Create a webpack configuration file
@@ -29,8 +39,6 @@ npm install --save-dev @bostonuniversity/bu-build-toolkit
 Create a `webpack.config.js` in your theme/plugin root:
 
 ```javascript
-const { createConfig } = require( '@bostonuniversity/bu-build-toolkit' );
-
 // Define your theme's entry points
 const themeEntryPoints = {
 	// Styles
@@ -52,10 +60,18 @@ const themeEntryPoints = {
 	'js/classic-editor': './src/js/classic-editor.js',
 };
 
-module.exports = createConfig( {
-	themeEntryPoints,
-} );
+// Export async config to dynamically import the ESM toolkit
+// Webpack supports async configs that return promises
+module.exports = ( async () => {
+	const { createConfig } = await import( '@bostonuniversity/bu-build-toolkit' );
+	
+	return createConfig( {
+		themeEntryPoints,
+	} );
+} )();
 ```
+
+**Note:** This uses CommonJS with dynamic `import()` to load the ESM toolkit, avoiding the need for `"type": "module"` in your package.json or `.mjs` file extensions.
 
 ### 2. Configure your package.json
 
@@ -154,9 +170,9 @@ Or reference the defaults provided by this toolkit directly in your package.json
 Add additional SASS include paths:
 
 ```javascript
-const { createConfig } = require( '@bostonuniversity/bu-build-toolkit' );
+import { createConfig } from '@bostonuniversity/bu-build-toolkit';
 
-module.exports = createConfig( {
+export default createConfig( {
 	themeEntryPoints: { /* your entries */ },
 	loadPaths: [
 		'./custom/sass/path',
@@ -169,9 +185,9 @@ module.exports = createConfig( {
 Override SASS compiler options:
 
 ```javascript
-const { createConfig } = require( '@bostonuniversity/bu-build-toolkit' );
+import { createConfig } from '@bostonuniversity/bu-build-toolkit';
 
-module.exports = createConfig( {
+export default createConfig( {
 	themeEntryPoints: { /* your entries */ },
 	sassOptions: {
 		outputStyle: 'compressed',
@@ -194,9 +210,9 @@ pass this to `sass-loader`.
 Switch between `sass-embedded` (default, faster) and `sass`, or `node-sass`:
 
 ```javascript
-const { createConfig } = require( '@bostonuniversity/bu-build-toolkit' );
+import { createConfig } from '@bostonuniversity/bu-build-toolkit';
 
-module.exports = createConfig( {
+export default createConfig( {
 	themeEntryPoints: { /* your entries */ },
 	sassCompiler: 'sass', // or 'sass-embedded'
 } );
@@ -207,9 +223,9 @@ module.exports = createConfig( {
 Modify webpack output statistics:
 
 ```javascript
-const { createConfig } = require( '@bostonuniversity/bu-build-toolkit' );
+import { createConfig } from '@bostonuniversity/bu-build-toolkit';
 
-module.exports = createConfig( {
+export default createConfig( {
 	themeEntryPoints: { /* your entries */ },
 	statsConfig: {
 		preset: 'verbose',
@@ -298,6 +314,26 @@ The `bu-build` CLI provides all common build commands:
 4. **Parallel Execution**: Runs multiple tasks in parallel when appropriate (e.g., `watch:scripts` + `watch:theme-json`)
 5. **Sequential Builds**: Runs build steps in the correct order
 6. **Consistent Behavior**: Same commands work across all themes
+
+## Local Development
+
+For local toolkit development, use the `file:` protocol in your test theme's package.json:
+
+```json
+{
+  "devDependencies": {
+    "@bostonuniversity/bu-build-toolkit": "file:../bu-build-toolkit"
+  }
+}
+```
+
+After making changes to the toolkit, run `npm install` in your theme to pick up the updates.
+
+**How it works:** The toolkit uses `resolveLoader` in its webpack configuration to ensure loaders are found in both scenarios:
+- **Production** (npm install): Loaders are hoisted to `theme/node_modules/` by npm
+- **Development** (file: install): Loaders remain in `toolkit/node_modules/` and are resolved via `resolveLoader.modules`
+
+This approach allows the toolkit to use WordPress's default webpack configuration without overriding rules, minimizing maintenance burden when @wordpress/scripts updates.
 
 ## PHP Linting Setup
 

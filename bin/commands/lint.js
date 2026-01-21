@@ -20,13 +20,13 @@
  * @module commands/lint
  */
 
-const path = require( 'path' );
-const {
+import path from 'path';
+import {
 	runWpScripts,
 	runNpmRunAll,
 	getThemePackage,
 	runCommand,
-} = require( '../utils/run' );
+} from '../utils/run.js';
 
 /**
  * Run All Linters
@@ -204,7 +204,7 @@ async function lintPhpAll( args ) {
 	await runCommand( 'bash', [ scriptPath, ...args ] );
 }
 
-module.exports = {
+export {
 	lint,
 	lintCss,
 	lintJs,

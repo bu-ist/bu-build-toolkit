@@ -11,7 +11,7 @@
  *    the default entry point search function from @wordpress/scripts.
  *    This config automatically finds all blocks and block.json files and 
  *    builds a list of entrypoints for webpack from that automagically.
- * 
+ *
  * 2) Theme Config - handles additional theme/plugin scripts and styles
  *   using custom entry points defined when calling createConfig(). This
  *   config entirely replaces the default entry points from the BlocksConfig
@@ -30,17 +30,27 @@
  */
 
 // Load the default WordPress scripts webpack configuration.
-const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
+import defaultConfig from '@wordpress/scripts/config/webpack.config.js';
 
 // Get the mergeWithRules function from webpack-merge for custom merging of configurations.
-const { mergeWithRules } = require( 'webpack-merge' );
+import { mergeWithRules } from 'webpack-merge';
 
 // Get required plugins.
-const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
-const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import RemoveEmptyScriptsPlugin from 'webpack-remove-empty-scripts';
 
 // Load Node.js path module for resolving file paths.
-const path = require( 'path' );
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { createRequire } from 'module';
+
+// ESM equivalents of __filename and __dirname
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = dirname( __filename );
+
+// Create require function for dynamic imports of CommonJS modules
+const require = createRequire( import.meta.url );
 
 /**
  * Create the webpack configuration for a theme or plugin.
@@ -76,20 +86,22 @@ function createWebpackConfig( options ) {
 	 */
 	const blocksConfig = {
 		devtool: 'source-map', // Always build the sourcemap, even for production.
-
-		// Tell webpack where to find loaders. Since loaders are installed in the toolkit's
-		// node_modules (not the theme's), we need to explicitly include that path.
+		
+		// Tell webpack where to find loaders. This allows WordPress's default SVG rule
+		// (which uses string loader names) to work even with file: installations.
 		resolveLoader: {
 			modules: [
 				'node_modules',
 				path.resolve( __dirname, '../node_modules' ), // Toolkit's node_modules
 			],
 		},
+
 		module: {
 			rules: [
+				// Add babel-loader for @bostonuniversity packages in node_modules
 				{
 					test: /\.(js|mjs)$/,
-					loader: 'babel-loader',
+					loader: require.resolve( 'babel-loader' ),
 					exclude: /node_modules\/(?!(@bostonuniversity)\/).*/,
 				},
 				{
@@ -139,15 +151,16 @@ function createWebpackConfig( options ) {
 			...themeEntryPoints,
 		},
 		devtool: 'source-map', // Always build the sourcemap, even for production.
-
-		// Tell webpack where to find loaders. Since loaders are installed in the toolkit's
-		// node_modules (not the theme's), we need to explicitly include that path.
+		
+		// Tell webpack where to find loaders. This allows WordPress's default SVG rule
+		// (which uses string loader names) to work even with file: installations.
 		resolveLoader: {
 			modules: [
 				'node_modules',
 				path.resolve( __dirname, '../node_modules' ), // Toolkit's node_modules
 			],
 		},
+
 		module: {
 			rules: [
 				{
@@ -189,9 +202,12 @@ function createWebpackConfig( options ) {
 	 * Export the new modified configuration for webpack and use the webpack-merge functions to merge our modified configuration in.
 	 * @see https://github.com/survivejs/webpack-merge?tab=readme-ov-file#mergewithrules
 	 */
-	return [
+	const configs = [
 		mergeWithRules( {
 			devtool: 'replace',
+			resolveLoader: {
+				modules: 'prepend', // Add our paths before default resolution
+			},
 			module: {
 				rules: {
 					test: 'match',
@@ -204,8 +220,11 @@ function createWebpackConfig( options ) {
 			stats: 'replace',
 		} )( defaultConfig, blocksConfig ),
 		mergeWithRules( {
-			entry: 'merge',
+			entry: 'replace',
 			devtool: 'replace',
+			resolveLoader: {
+				modules: 'prepend', // Add our paths before default resolution
+			},
 			module: {
 				rules: {
 					test: 'match',
@@ -219,6 +238,8 @@ function createWebpackConfig( options ) {
 			plugins: 'replace',
 		} )( defaultConfig, themeConfig ),
 	];
+	
+	return configs;
 }
 
-module.exports = createWebpackConfig;
+export default createWebpackConfig;

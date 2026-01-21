@@ -25,10 +25,14 @@
  * @see https://developer.wordpress.org/plugins/internationalization/
  */
 
-const path = require( 'path' );
-const chalk = require( 'chalk' );
-const { rimraf } = require( 'rimraf' );
-const { runCommand, runNpmRunAll } = require( '../utils/run' );
+import path from 'path';
+import chalk from 'chalk';
+import { rimraf } from 'rimraf';
+import { runCommand, runNpmRunAll } from '../utils/run.js';
+import { createRequire } from 'module';
+
+// Create require for dynamic imports
+const require = createRequire( import.meta.url );
 
 /**
  * Build Internationalization Files
@@ -140,7 +144,7 @@ async function buildWpmakepot( args ) {
 	await runCommand( wpi18nPath, [ 'makepot', '--domain-path', 'languages' ] );
 }
 
-module.exports = {
+export {
 	buildI18n,
 	buildClean,
 	buildWpi18n,

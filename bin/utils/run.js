@@ -13,8 +13,13 @@
  * @module utils/run
  */
 
-const { spawn } = require( 'child_process' );
-const path = require( 'path' );
+import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
+import { createRequire } from 'module';
+
+// Create require for dynamic imports
+const require = createRequire( import.meta.url );
 
 /**
  * Run Command
@@ -166,7 +171,7 @@ function getThemePackage() {
 	return require( path.join( process.cwd(), 'package.json' ) );
 }
 
-module.exports = {
+export {
 	runCommand,
 	runWpScriptsFiltered,
 	runWpScripts,

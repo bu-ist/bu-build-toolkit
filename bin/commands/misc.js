@@ -8,8 +8,8 @@
  * @module commands/misc
  */
 
-const { runWpScripts } = require( '../utils/run' );
-const chalk = require( 'chalk' );
+import { runWpScripts } from '../utils/run.js';
+import chalk from 'chalk';
 
 /**
  * Format Code
@@ -166,7 +166,7 @@ For theme.json compilation:
 	` );
 }
 
-module.exports = {
+export {
 	format,
 	checkEngines,
 	checkLicenses,

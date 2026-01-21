@@ -14,10 +14,16 @@
  * @module commands/watch
  */
 
-const path = require( 'path' );
-const fs = require( 'fs' );
-const chalk = require( 'chalk' );
-const { runWpScriptsFiltered, runWpScripts, runNpmRunAll, getThemePackage } = require( '../utils/run' );
+import path from 'path';
+import fs from 'fs';
+import chalk from 'chalk';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { runWpScriptsFiltered, runWpScripts, runNpmRunAll, getThemePackage } from '../utils/run.js';
+
+// ESM equivalents of __filename and __dirname
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = dirname( __filename );
 
 /**
  * Start Development Mode
@@ -118,7 +124,6 @@ async function watchScripts( args ) {
  */
 async function watchThemeJson( args ) {
 	console.log( chalk.cyan.bold( '\n▶ WATCH 2: Theme.json changes' ) );
-	const { runCommand } = require( '../utils/run' );
 	const nodemonPath = path.resolve(
 		__dirname,
 		'../../node_modules/.bin/nodemon'
@@ -145,7 +150,7 @@ async function watchVerbose( args ) {
 	await runWpScripts( 'start', args );
 }
 
-module.exports = {
+export {
 	start,
 	watchScripts,
 	watchThemeJson,

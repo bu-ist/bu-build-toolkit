@@ -18,7 +18,7 @@
  * @see https://react-svgr.com/docs/options/#svgo
  */
 
-module.exports = {
+export default {
 	plugins: [
 		{
 			name: 'prefixIds',
