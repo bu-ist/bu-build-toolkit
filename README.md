@@ -24,11 +24,10 @@ npm install --save-dev @bostonuniversity/bu-build-toolkit
 
 ## Requirements
 
-This toolkit uses **ESM (ECMAScript Modules)** internally, but your theme's `webpack.config.js` can use **CommonJS** with async dynamic imports (see example above). This avoids needing `"type": "module"` in your theme's package.json.
+This toolkit uses **ESM (ECMAScript Modules)** internally, but your theme's `webpack.config.js` can use **CommonJS** with async dynamic imports (see example below). This avoids needing `"type": "module"` in your theme's package.json.
 
-Create these files:
-- `webpack.config.mjs` (instead of webpack.config.js)
-- `babel.config.mjs` (instead of babel.config.js) - if you have custom Babel config
+Create this file:
+- `webpack.config.js`
 
 Alternatively, you can add `"type": "module"` to your `package.json`, but this makes all `.js` files in your theme use ESM, which may cause issues with existing frontend scripts.
 
