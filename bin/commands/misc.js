@@ -166,9 +166,4 @@ For theme.json compilation:
 	` );
 }
 
-export {
-	format,
-	checkEngines,
-	checkLicenses,
-	help,
-};
+export { format, checkEngines, checkLicenses, help };

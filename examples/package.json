@@ -38,6 +38,7 @@
     "test:unit": "bu-build test:unit",
     "__BUILD__": "=========================================================================",
     "build": "bu-build build",
+    "build:log": "bu-build build 2>&1 | tee build.log",
     "build:scripts": "bu-build build:scripts",
     "build:theme-json": "bu-build build:theme-json",
     "build:i18n": "bu-build build:i18n",

@@ -21,12 +21,7 @@
  */
 
 import path from 'path';
-import {
-	runWpScripts,
-	runNpmRunAll,
-	getThemePackage,
-	runCommand,
-} from '../utils/run.js';
+import { runWpScripts, runNpmRunAll, runCommand } from '../utils/run.js';
 
 /**
  * Run All Linters

@@ -93,7 +93,4 @@ async function testUnit( args ) {
 	await runWpScripts( 'test-unit-js', args );
 }
 
-export {
-	testE2e,
-	testUnit,
-};
+export { testE2e, testUnit };

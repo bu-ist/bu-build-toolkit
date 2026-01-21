@@ -144,9 +144,4 @@ async function buildWpmakepot( args ) {
 	await runCommand( wpi18nPath, [ 'makepot', '--domain-path', 'languages' ] );
 }
 
-export {
-	buildI18n,
-	buildClean,
-	buildWpi18n,
-	buildWpmakepot,
-};
+export { buildI18n, buildClean, buildWpi18n, buildWpmakepot };

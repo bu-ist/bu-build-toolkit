@@ -15,7 +15,6 @@
 
 import { spawn } from 'child_process';
 import path from 'path';
-import fs from 'fs';
 import { createRequire } from 'module';
 
 // Create require for dynamic imports

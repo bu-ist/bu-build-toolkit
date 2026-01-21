@@ -14,12 +14,17 @@
  * @module commands/watch
  */
 
-import path from 'path';
+import path, { dirname } from 'path';
 import fs from 'fs';
 import chalk from 'chalk';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { runWpScriptsFiltered, runWpScripts, runNpmRunAll, getThemePackage } from '../utils/run.js';
+import {
+	runWpScriptsFiltered,
+	runWpScripts,
+	runNpmRunAll,
+	getThemePackage,
+	runCommand,
+} from '../utils/run.js';
 
 // ESM equivalents of __filename and __dirname
 const __filename = fileURLToPath( import.meta.url );
@@ -53,17 +58,17 @@ const __dirname = dirname( __filename );
 async function start( args ) {
 	const themeJsonSrcDir = path.join( process.cwd(), 'src/theme-json' );
 	const themePackage = getThemePackage();
-	
+
 	const tasks = [];
-	
+
 	// Always include webpack watch
 	tasks.push( 'watch:scripts' );
-	
+
 	// Check if theme.json source directory exists
 	if ( fs.existsSync( themeJsonSrcDir ) ) {
 		tasks.push( 'watch:theme-json' );
 	}
-	
+
 	// Check if theme has a custom watch:theme script
 	if ( themePackage.scripts && themePackage.scripts[ 'watch:theme' ] ) {
 		tasks.push( 'watch:theme' );
@@ -71,7 +76,11 @@ async function start( args ) {
 
 	// Show watch header with task count
 	console.log( chalk.cyan( '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' ) );
-	console.log( chalk.cyan.bold( `  Starting development mode (${ tasks.length } watchers)` ) );
+	console.log(
+		chalk.cyan.bold(
+			`  Starting development mode (${ tasks.length } watchers)`
+		)
+	);
 	console.log( chalk.cyan( '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' ) );
 
 	if ( tasks.length > 1 ) {
@@ -150,9 +159,4 @@ async function watchVerbose( args ) {
 	await runWpScripts( 'start', args );
 }
 
-export {
-	start,
-	watchScripts,
-	watchThemeJson,
-	watchVerbose,
-};
+export { start, watchScripts, watchThemeJson, watchVerbose };

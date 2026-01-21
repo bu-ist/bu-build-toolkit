@@ -335,6 +335,56 @@ After making changes to the toolkit, run `npm install` in your theme to pick up 
 
 This approach allows the toolkit to use WordPress's default webpack configuration without overriding rules, minimizing maintenance burden when @wordpress/scripts updates.
 
+### Debugging Build Errors
+
+When webpack errors overflow your terminal buffer, save output to a file while viewing it in real-time:
+
+**Mac/Linux (using tee):**
+```bash
+bu-build build 2>&1 | tee build.log
+bu-build start 2>&1 | tee dev.log
+```
+
+**Windows (redirect only):**
+```bash
+bu-build build > build.log 2>&1
+bu-build start > dev.log 2>&1
+```
+
+**Using npm scripts:**
+```bash
+# Add to your package.json:
+"build:log": "bu-build build 2>&1 | tee build.log"  # Mac/Linux
+"build:log": "bu-build build > build.log 2>&1"     # Windows
+
+# Then run:
+npm run build:log
+```
+
+The log file will contain complete output including:
+- Full webpack stats and configuration
+- Complete error stack traces
+- All module resolution details
+
+**Reading log files in the terminal:**
+
+The log file contains ANSI color codes that may not display correctly in VS Code. Use terminal commands to view the colorized output:
+
+```bash
+# View the entire log file with colors
+cat build.log
+
+# Page through the log with colors preserved
+less -R build.log
+
+# View the last 50 lines
+tail -n 50 build.log
+
+# Search for specific errors
+grep -i "error" build.log
+grep -i "failed" build.log
+```
+
 ## PHP Linting Setup
 
 The toolkit includes PHP_CodeSniffer with WordPress Coding Standards. To use it:

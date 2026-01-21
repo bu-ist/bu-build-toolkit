@@ -21,11 +21,10 @@
  * @module commands/build
  */
 
-import path from 'path';
+import path, { dirname } from 'path';
 import fs from 'fs';
 import chalk from 'chalk';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import {
 	runWpScriptsFiltered,
 	runWpScripts,
@@ -194,10 +193,4 @@ async function buildVersion( args ) {
 	await runCommand( 'node', [ versionScript ] );
 }
 
-export {
-	build,
-	buildScripts,
-	buildThemeJson,
-	buildVerbose,
-	buildVersion,
-};
+export { build, buildScripts, buildThemeJson, buildVerbose, buildVersion };

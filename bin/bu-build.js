@@ -20,11 +20,10 @@
  * bu-build lint:js --fix
  */
 
-import path from 'path';
+import path, { dirname } from 'path';
 import fs from 'fs';
 import chalk from 'chalk';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 // ESM equivalents of __filename and __dirname
 const __filename = fileURLToPath( import.meta.url );
@@ -150,8 +149,6 @@ const commands = {
  */
 async function main() {
 	// Display header once per session using environment variable
-	// This prevents duplicate headers in nested child commands spawned
-	// from a single bu-build invocation.
 	if ( ! process.env.BU_BUILD_HEADER_SHOWN ) {
 		displayHeader();
 		process.env.BU_BUILD_HEADER_SHOWN = 'true';
