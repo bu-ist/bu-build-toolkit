@@ -63,7 +63,7 @@ module.exports = ( async () => {
 	const { createConfig } = await import( '@bostonuniversity/bu-build-toolkit' );
 	
 	return createConfig( {
-		themeEntryPoints,
+		themeEntryPoints, // Passes the entrypoints unique to this repo to the webpack config.
 	} );
 } )();
 ```
@@ -110,6 +110,10 @@ The toolkit provides a `bu-build` CLI that handles all common build tasks. Add t
 ```
 
 **Note:** The `postinstall` script ensures PHP dependencies (like PHP_CodeSniffer for linting) are installed automatically.
+
+This will install composer.json from the bu-build-toolkit repo installed in your project's node_modules folder and should
+install PHPCS to get linting working for PHP files. 
+
 
 **Theme.json Compilation** (automatic, no script needed):
 
@@ -164,6 +168,11 @@ Or reference the defaults provided by this toolkit directly in your package.json
 
 ### Custom SASS Include Paths
 
+SASS is compiled by @wordpress/scripts which includes `sass-loader`. If your project
+loads imports SASS partials from locations such as node_modules you may need to include
+those paths so SASS knows to look for partials there. We do this in Responsive Foundation
+partials loaded into child themes. We also use it for common packages like FontAwesome. 
+
 Add additional SASS include paths:
 
 ```javascript
@@ -216,6 +225,8 @@ export default createConfig( {
 ```
 
 ### Custom Webpack Stats
+Stats is for controling the output logged to the terminal. This can be modified in 
+your project if needed. 
 
 Modify webpack output statistics:
 
