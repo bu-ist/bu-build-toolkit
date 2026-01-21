@@ -3,12 +3,11 @@
  *
  * Main entry point for the BU Build Toolkit.
  * Provides utilities for configuring webpack builds for WordPress themes and plugins.
- * 
+ *
  * This module exports functions to create webpack configurations with sensible defaults
  * tailored for Boston University themes and plugins, including SASS options,
  * stats configuration, and path resolution helpers.
  *
- * @package bu-build-toolkit
  */
 
 // Loads the base webpack configuration for BU themes and plugins.
@@ -53,9 +52,9 @@ const defaultSassOptions = {
 /**
  * Default stats configuration for webpack output.
  * These settings focus on errors and warnings for clarity.
- * 
+ *
  * Stats controls the verbosity of webpack output in the console.
- * 
+ *
  * @see https://webpack.js.org/configuration/stats/ Webpack Stats Configuration
  */
 const defaultStatsConfig = {
@@ -65,10 +64,10 @@ const defaultStatsConfig = {
 
 /**
  * Create a webpack configuration for a theme or plugin.
- * 
+ *
  * This function wraps createWebpackConfig and applies default settings.
  * It merges user-provided options with sensible defaults for BU themes.
- * 
+ *
  * This function is called in a theme or plugin's webpack.config.js file
  * with any desired parameters. `createConfig` then calls `createWebpackConfig`
  * with the final merged options and returns the webpack configuration that

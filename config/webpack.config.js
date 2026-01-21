@@ -9,7 +9,7 @@
  * the other to handle both block and theme/plugin assets:
  * 1) Blocks Config - handles block JavaScript and styles using
  *    the default entry point search function from @wordpress/scripts.
- *    This config automatically finds all blocks and block.json files and 
+ *    This config automatically finds all blocks and block.json files and
  *    builds a list of entrypoints for webpack from that automagically.
  *
  * 2) Theme Config - handles additional theme/plugin scripts and styles
@@ -40,9 +40,8 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import RemoveEmptyScriptsPlugin from 'webpack-remove-empty-scripts';
 
 // Load Node.js path module for resolving file paths.
-import path from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import { createRequire } from 'module';
 
 // ESM equivalents of __filename and __dirname
@@ -86,7 +85,7 @@ function createWebpackConfig( options ) {
 	 */
 	const blocksConfig = {
 		devtool: 'source-map', // Always build the sourcemap, even for production.
-		
+
 		// Tell webpack where to find loaders. This allows WordPress's default SVG rule
 		// (which uses string loader names) to work even with file: installations.
 		resolveLoader: {
@@ -151,7 +150,7 @@ function createWebpackConfig( options ) {
 			...themeEntryPoints,
 		},
 		devtool: 'source-map', // Always build the sourcemap, even for production.
-		
+
 		// Tell webpack where to find loaders. This allows WordPress's default SVG rule
 		// (which uses string loader names) to work even with file: installations.
 		resolveLoader: {
@@ -238,7 +237,7 @@ function createWebpackConfig( options ) {
 			plugins: 'replace',
 		} )( defaultConfig, themeConfig ),
 	];
-	
+
 	return configs;
 }
 
