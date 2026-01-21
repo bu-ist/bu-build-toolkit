@@ -41,6 +41,7 @@
 import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
+import chalk from 'chalk';
 
 const cwd = process.cwd();
 const sourceDir = path.join( cwd, 'src/theme-json' );
@@ -71,7 +72,7 @@ async function tryImport( basePath ) {
 
 	for ( const ext of extensions ) {
 		const filePath = basePath + ext; // Create full file path with extension.
-		
+
 		// Check if the file exists before attempting to import.
 		if ( fs.existsSync( filePath ) ) {
 			try {
@@ -81,7 +82,7 @@ async function tryImport( basePath ) {
 			} catch ( error ) {
 				// Log import errors but continue trying other extensions.
 				console.error(
-					`\x1b[31mError importing ${ filePath }:\x1b[0m`,
+					chalk.red( `Error importing ${ filePath }:` ),
 					error.message
 				);
 				return null;
@@ -117,7 +118,9 @@ async function compileThemeJson() {
 	// Check if source directory exists - if not, skip compilation
 	if ( ! fs.existsSync( sourceDir ) ) {
 		console.log(
-			'\x1b[33mNo src/theme-json directory found. Skipping theme.json compilation.\x1b[0m'
+			chalk.yellow(
+				'No src/theme-json directory found. Skipping theme.json compilation.'
+			)
 		);
 		return;
 	}
@@ -134,10 +137,12 @@ async function compileThemeJson() {
 	// Check if we got at least one module
 	if ( config === null && settings === null && styles === null ) {
 		console.error(
-			'\x1b[31mNo theme.json source files found in src/theme-json/\x1b[0m'
+			chalk.red( 'No theme.json source files found in src/theme-json/' )
 		);
 		console.error(
-			'\x1b[31mExpected: config.mjs, settings.mjs, styles.mjs (or .js)\x1b[0m'
+			chalk.red(
+				'Expected: config.mjs, settings.mjs, styles.mjs (or .js)'
+			)
 		);
 		process.exit( 1 );
 	}
@@ -156,12 +161,12 @@ async function compileThemeJson() {
 	fs.writeFileSync( outputFile, json );
 
 	console.log(
-		`\x1b[32m✓ theme.json compiled successfully to ${ outputFile }\x1b[0m`
+		chalk.green( `✓ theme.json compiled successfully to ${ outputFile }` )
 	);
 }
 
 // Run the compiler
 compileThemeJson().catch( ( error ) => {
-	console.error( '\x1b[31mError compiling theme.json:\x1b[0m', error );
+	console.error( chalk.red( 'Error compiling theme.json:' ), error );
 	process.exit( 1 );
 } );

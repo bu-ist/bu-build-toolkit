@@ -22,14 +22,15 @@
 
 const path = require( 'path' );
 const fs = require( 'fs' );
+const chalk = require( 'chalk' );
 
 // Import command modules organized by functionality
 const watchCommands = require( './commands/watch' );
 const buildCommands = require( './commands/build' );
-const lintCommands  = require( './commands/lint' );
-const testCommands  = require( './commands/test' );
-const i18nCommands  = require( './commands/i18n' );
-const miscCommands  = require( './commands/misc' );
+const lintCommands = require( './commands/lint' );
+const testCommands = require( './commands/test' );
+const i18nCommands = require( './commands/i18n' );
+const miscCommands = require( './commands/misc' );
 
 // Read version from package.json
 const packageJsonPath = path.resolve( __dirname, '../package.json' );
@@ -43,25 +44,24 @@ const packageJson = JSON.parse( fs.readFileSync( packageJsonPath, 'utf8' ) );
  * Uses BU Red (#CC0000) for branding.
  */
 function displayHeader() {
-	console.log( '\x1b[38;2;204;0;0m' );
-	console.log( '▗▄▄▖  ▗▄▖  ▗▄▄▖▗▄▄▄▖▗▄▖ ▗▖  ▗▖    ▗▖ ▗▖▗▖  ▗▖▗▄▄▄▖▗▖  ▗▖▗▄▄▄▖▗▄▄▖  ▗▄▄▖▗▄▄▄▖▗▄▄▄▖▗▖  ▗▖' );
-	console.log( '▐▌ ▐▌▐▌ ▐▌▐▌     █ ▐▌ ▐▌▐▛▚▖▐▌    ▐▌ ▐▌▐▛▚▖▐▌  █  ▐▌  ▐▌▐▌   ▐▌ ▐▌▐▌     █    █   ▝▚▞▘ ' );
-	console.log( '▐▛▀▚▖▐▌ ▐▌ ▝▀▚▖  █ ▐▌ ▐▌▐▌ ▝▜▌    ▐▌ ▐▌▐▌ ▝▜▌  █  ▐▌  ▐▌▐▛▀▀▘▐▛▀▚▖ ▝▀▚▖  █    █    ▐▌  ' );
-	console.log( '▐▙▄▞▘▝▚▄▞▘▗▄▄▞▘  █ ▝▚▄▞▘▐▌  ▐▌    ▝▚▄▞▘▐▌  ▐▌▗▄█▄▖ ▝▚▞▘ ▐▙▄▄▖▐▌ ▐▌▗▄▄▞▘▗▄█▄▖  █    ▐▌  ' );
-	console.log( '\x1b[0m' );
-	console.log( '\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m' );
-	console.log( `\x1b[36m\x1b[1m  BU Build Tools - Version ${packageJson.version}\x1b[0m` );
-	console.log( `\x1b[36m  ${packageJson.name}\x1b[0m` );
-	console.log( '\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n' );
+	// eslint-disable-next-line prettier/prettier
+	console.log( chalk.rgb( 204, 0, 0 )( '▗▄▄▖  ▗▄▖  ▗▄▄▖▗▄▄▄▖▗▄▖ ▗▖  ▗▖    ▗▖ ▗▖▗▖  ▗▖▗▄▄▄▖▗▖  ▗▖▗▄▄▄▖▗▄▄▖  ▗▄▄▖▗▄▄▄▖▗▄▄▄▖▗▖  ▗▖' ) ); // eslint-disable-next-line prettier/prettier
+	console.log( chalk.rgb( 204, 0, 0 )( '▐▌ ▐▌▐▌ ▐▌▐▌     █ ▐▌ ▐▌▐▛▚▖▐▌    ▐▌ ▐▌▐▛▚▖▐▌  █  ▐▌  ▐▌▐▌   ▐▌ ▐▌▐▌     █    █   ▝▚▞▘ ' ) ); // eslint-disable-next-line prettier/prettier
+	console.log( chalk.rgb( 204, 0, 0 )( '▐▛▀▚▖▐▌ ▐▌ ▝▀▚▖  █ ▐▌ ▐▌▐▌ ▝▜▌    ▐▌ ▐▌▐▌ ▝▜▌  █  ▐▌  ▐▌▐▛▀▀▘▐▛▀▚▖ ▝▀▚▖  █    █    ▐▌  ' ) ); // eslint-disable-next-line prettier/prettier
+	console.log( chalk.rgb( 204, 0, 0 )( '▐▙▄▞▘▝▚▄▞▘▗▄▄▞▘  █ ▝▚▄▞▘▐▌  ▐▌    ▝▚▄▞▘▐▌  ▐▌▗▄█▄▖ ▝▚▞▘ ▐▙▄▄▖▐▌ ▐▌▗▄▄▞▘▗▄█▄▖  █    ▐▌  ' ) ); // eslint-disable-next-line prettier/prettier
+	console.log( chalk.cyan( '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' ) ); // eslint-disable-next-line prettier/prettier
+	console.log( chalk.cyan.bold( `  BU Build Tools - Version ${ packageJson.version }` ) );
+	console.log( chalk.cyan( `  ${ packageJson.name }` ) ); // eslint-disable-next-line prettier/prettier
+	console.log( chalk.cyan( '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' ) ); // eslint-disable-next-line prettier/prettier
 }
 
 /**
  * Parse Command-Line Arguments
- * 
+ *
  * When running a command like `bu-build build --production`,
  * command = 'build'
  * args = ['--production']
- * 
+ *
  * `process.argv` contains an array of the command-line arguments:
  * - process.argv[0]: Node.js executable path
  * - process.argv[1]: Path to this script (bu-build.js)
@@ -89,13 +89,13 @@ const args = process.argv.slice( 3 ); // Get all arguments after the command
  */
 const commands = {
 	// Watch commands
-	'start': watchCommands.start,
+	start: watchCommands.start,
 	'watch:scripts': watchCommands.watchScripts,
 	'watch:theme-json': watchCommands.watchThemeJson,
 	'watch:verbose': watchCommands.watchVerbose,
 
 	// Build commands
-	'build': buildCommands.build,
+	build: buildCommands.build,
 	'build:scripts': buildCommands.buildScripts,
 	'build:theme-json': buildCommands.buildThemeJson,
 	'build:verbose': buildCommands.buildVerbose,
@@ -108,7 +108,7 @@ const commands = {
 	'build:wpmakepot': i18nCommands.buildWpmakepot,
 
 	// Lint commands
-	'lint': lintCommands.lint,
+	lint: lintCommands.lint,
 	'lint:css': lintCommands.lintCss,
 	'lint:js': lintCommands.lintJs,
 	'lint:js:fix': lintCommands.lintJsFix,
@@ -122,10 +122,10 @@ const commands = {
 	'test:unit': testCommands.testUnit,
 
 	// Misc commands
-	'format': miscCommands.format,
+	format: miscCommands.format,
 	'check-engines': miscCommands.checkEngines,
 	'check-licenses': miscCommands.checkLicenses,
-	'help': miscCommands.help,
+	help: miscCommands.help,
 };
 
 /**
@@ -152,16 +152,22 @@ async function main() {
 	}
 
 	// Show help if no command provided or help explicitly requested
-	if ( ! command || command === 'help' || command === '--help' || command === '-h' ) {
+	if (
+		! command ||
+		command === 'help' ||
+		command === '--help' ||
+		command === '-h'
+	) {
 		miscCommands.help();
 		process.exit( 0 );
 	}
 
 	// Check if command exists
 	if ( ! commands[ command ] ) {
-		console.error( `\x1b[31mUnknown command: ${ command }\x1b[0m` );
-		console.error( `\x1b[31mRun 'bu-build help' to see available commands.\x1b[0m` );
-		console.log( '\x1b[0m' );
+		console.error( chalk.red( `Unknown command: ${ command }` ) );
+		console.error(
+			chalk.red( "Run 'bu-build help' to see available commands." )
+		);
 		process.exit( 1 );
 	}
 
@@ -169,7 +175,9 @@ async function main() {
 	try {
 		await commands[ command ]( args );
 	} catch ( error ) {
-		console.error( `\x1b[31mError running command: ${ error.message }\x1b[0m` );
+		console.error(
+			chalk.red( `Error running command: ${ error.message }` )
+		);
 		process.exit( 1 );
 	}
 }

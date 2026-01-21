@@ -21,7 +21,12 @@
  */
 
 const path = require( 'path' );
-const { runWpScripts, runNpmRunAll, getThemePackage, runCommand } = require( '../utils/run' );
+const {
+	runWpScripts,
+	runNpmRunAll,
+	getThemePackage,
+	runCommand,
+} = require( '../utils/run' );
 
 /**
  * Run All Linters
@@ -45,7 +50,13 @@ const { runWpScripts, runNpmRunAll, getThemePackage, runCommand } = require( '..
  * @throws {Error} If any linter fails
  */
 async function lint( args ) {
-	const lintSteps = [ 'lint:css', 'lint:js', 'lint:md', 'lint:pkg', 'lint:php' ];
+	const lintSteps = [
+		'lint:css',
+		'lint:js',
+		'lint:md',
+		'lint:pkg',
+		'lint:php',
+	];
 	await runNpmRunAll( lintSteps );
 }
 
@@ -105,7 +116,12 @@ async function lintJs( args ) {
  * @return {Promise<void>}
  */
 async function lintJsFix( args ) {
-	await runWpScripts( 'lint-js', [ '--fix', '--ignore-pattern', '/dev/', ...args ] );
+	await runWpScripts( 'lint-js', [
+		'--fix',
+		'--ignore-pattern',
+		'/dev/',
+		...args,
+	] );
 }
 
 /**

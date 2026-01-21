@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Internationalization (i18n) Commands Module
  *
@@ -25,6 +26,8 @@
  */
 
 const path = require( 'path' );
+const chalk = require( 'chalk' );
+const { rimraf } = require( 'rimraf' );
 const { runCommand, runNpmRunAll } = require( '../utils/run' );
 
 /**
@@ -46,9 +49,13 @@ const { runCommand, runNpmRunAll } = require( '../utils/run' );
  * await buildI18n([]);
  */
 async function buildI18n( args ) {
-	console.log( '\x1b[36m\x1b[1m\n► STEP 3: Building internationalization files\x1b[0m' );
+	console.log(
+		chalk.cyan.bold( '\n▶ STEP 3: Building internationalization files' )
+	);
 	await runNpmRunAll( [ 'build:clean', 'build:wpi18n', 'build:wpmakepot' ] );
-	console.log( '\x1b[32m✓ Internationalization files built successfully\x1b[0m' );
+	console.log(
+		chalk.green( '✓ Internationalization files built successfully' )
+	);
 }
 
 /**
@@ -66,8 +73,8 @@ async function buildI18n( args ) {
  * @return {Promise<void>}
  */
 async function buildClean( args ) {
-	const rimrafPath = path.resolve( __dirname, '../../node_modules/.bin/rimraf' );
-	await runCommand( rimrafPath, [ 'languages/*' ] );
+	// Use rimraf as a library instead of spawning a process
+	await rimraf( 'languages/*' );
 }
 
 /**
@@ -90,7 +97,11 @@ async function buildClean( args ) {
  * @see https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#text-domains
  */
 async function buildWpi18n( args ) {
-	const wpi18nPath = path.resolve( __dirname, '../../node_modules/.bin/wpi18n' );
+	// Resolve wpi18n bin path relative to the module
+	const wpi18nPath = path.join(
+		require.resolve( 'node-wp-i18n' ),
+		'../bin/wpi18n'
+	);
 	await runCommand( wpi18nPath, [ 'addtextdomain' ] );
 }
 
@@ -121,7 +132,11 @@ async function buildWpi18n( args ) {
  * @see https://developer.wordpress.org/plugins/internationalization/localization/
  */
 async function buildWpmakepot( args ) {
-	const wpi18nPath = path.resolve( __dirname, '../../node_modules/.bin/wpi18n' );
+	// Resolve wpi18n bin path relative to the module
+	const wpi18nPath = path.join(
+		require.resolve( 'node-wp-i18n' ),
+		'../bin/wpi18n'
+	);
 	await runCommand( wpi18nPath, [ 'makepot', '--domain-path', 'languages' ] );
 }
 

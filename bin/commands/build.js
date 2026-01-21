@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Build Commands Module
  *
@@ -22,7 +23,14 @@
 
 const path = require( 'path' );
 const fs = require( 'fs' );
-const { runWpScriptsFiltered, runWpScripts, runNpmRunAll, getThemePackage, runCommand } = require( '../utils/run' );
+const chalk = require( 'chalk' );
+const {
+	runWpScriptsFiltered,
+	runWpScripts,
+	runNpmRunAll,
+	getThemePackage,
+	runCommand,
+} = require( '../utils/run' );
 
 /**
  * Build Production Assets
@@ -65,9 +73,9 @@ async function build( args ) {
 			buildSteps.push( 'build:theme' );
 		}
 	}
-	
+
 	buildSteps.push( 'build:scripts' );
-	
+
 	if ( themePackage.scripts ) {
 		if ( themePackage.scripts[ 'build:i18n' ] ) {
 			buildSteps.push( 'build:i18n' );
@@ -78,9 +86,13 @@ async function build( args ) {
 	}
 
 	// Show build header with step count
-	console.log( '\x1b[36m\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m' );
-	console.log( `\x1b[36m\x1b[1m  Building for production (${buildSteps.length} steps)\x1b[0m` );
-	console.log( '\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n' );
+	console.log( chalk.cyan( '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' ) );
+	console.log(
+		chalk.cyan.bold(
+			`  Building for production (${ buildSteps.length } steps)`
+		)
+	);
+	console.log( chalk.cyan( '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' ) );
 
 	if ( buildSteps.length > 1 ) {
 		await runNpmRunAll( buildSteps );
@@ -112,7 +124,9 @@ async function build( args ) {
  * @return {Promise<void>}
  */
 async function buildScripts( args ) {
-	console.log( '\x1b[36m\x1b[1m\n► STEP 2: Compiling scripts and styles\x1b[0m' );
+	console.log(
+		chalk.cyan.bold( '\n▶ STEP 2: Compiling scripts and styles' )
+	);
 	await runWpScriptsFiltered( 'build', args );
 }
 
@@ -135,7 +149,7 @@ async function buildScripts( args ) {
  * @return {Promise<void>}
  */
 async function buildThemeJson( args ) {
-	console.log( '\x1b[36m\x1b[1m\n► STEP 1: Compiling theme.json\x1b[0m' );
+	console.log( chalk.cyan.bold( '\n▶ STEP 1: Compiling theme.json' ) );
 	const compilerPath = path.resolve( __dirname, '../compile-theme-json.mjs' );
 	await runCommand( 'node', [ compilerPath ] );
 }
@@ -167,7 +181,9 @@ async function buildVerbose( args ) {
  * @return {Promise<void>}
  */
 async function buildVersion( args ) {
-	console.log( '\x1b[36m\x1b[1m\n► STEP 4: Updating version information\x1b[0m' );
+	console.log(
+		chalk.cyan.bold( '\n▶ STEP 4: Updating version information' )
+	);
 	const versionScript = path.resolve( __dirname, '../update-version.js' );
 	await runCommand( 'node', [ versionScript ] );
 }

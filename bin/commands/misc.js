@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Miscellaneous Commands Module
  *
@@ -8,6 +9,7 @@
  */
 
 const { runWpScripts } = require( '../utils/run' );
+const chalk = require( 'chalk' );
 
 /**
  * Format Code
@@ -66,9 +68,11 @@ async function format( args ) {
 async function checkEngines( args ) {
 	try {
 		await runWpScripts( 'check-engines', args );
-		console.log( '\x1b[32m✓ Node.js and npm versions are compatible\x1b[0m' );
+		console.log(
+			chalk.green( '✓ Node.js and npm versions are compatible' )
+		);
 	} catch ( error ) {
-		console.error( '\x1b[31m✗ Version compatibility check failed\x1b[0m' );
+		console.error( chalk.red( '✗ Version compatibility check failed' ) );
 		throw error;
 	}
 }
@@ -99,9 +103,11 @@ async function checkEngines( args ) {
 async function checkLicenses( args ) {
 	try {
 		await runWpScripts( 'check-licenses', args );
-		console.log( '\x1b[32m✓ All dependency licenses are compatible\x1b[0m' );
+		console.log(
+			chalk.green( '✓ All dependency licenses are compatible' )
+		);
 	} catch ( error ) {
-		console.error( '\x1b[31m✗ License compatibility check failed\x1b[0m' );
+		console.error( chalk.red( '✗ License compatibility check failed' ) );
 		throw error;
 	}
 }

@@ -31,6 +31,7 @@
 
 const fs = require( 'fs' );
 const path = require( 'path' );
+const chalk = require( 'chalk' );
 
 /**
  * Get Package Information
@@ -108,7 +109,7 @@ async function updateFile( filePath, header, prependOnly = false ) {
 	if ( ! fs.existsSync( fullPath ) ) {
 		// eslint-disable-next-line no-console
 		console.log(
-			`\x1b[33m⚠️  Skipping ${ filePath } (file not found)\x1b[0m`
+			chalk.yellow( `⚠️  Skipping ${ filePath } (file not found)` )
 		);
 		return;
 	}
@@ -124,10 +125,10 @@ async function updateFile( filePath, header, prependOnly = false ) {
 			fs.writeFileSync( fullPath, header, 'utf-8' );
 		}
 
-		console.log( `\x1b[32m✓ Updated ${ filePath }\x1b[0m` );
+		console.log( chalk.green( `✓ Updated ${ filePath }` ) );
 	} catch ( error ) {
 		console.error(
-			`\x1b[31m✗ Failed to update ${ filePath }: ${ error.message }\x1b[0m`
+			chalk.red( `✗ Failed to update ${ filePath }: ${ error.message }` )
 		);
 		throw error;
 	}
@@ -152,10 +153,10 @@ async function main() {
 		// Update build/css/theme.css (prepend to existing minified content)
 		await updateFile( 'build/css/theme.css', cssHeader, true );
 
-		console.log( '\n\x1b[32m✓ Version update complete!\x1b[0m' );
+		console.log( '\n' + chalk.green( '✓ Version update complete!' ) );
 	} catch ( error ) {
 		console.error(
-			`\n\x1b[31m✗ Version update failed: ${ error.message }\x1b[0m`
+			'\n' + chalk.red( `✗ Version update failed: ${ error.message }` )
 		);
 		process.exit( 1 );
 	}

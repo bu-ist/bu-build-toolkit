@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Watch Commands Module
  *
@@ -15,6 +16,7 @@
 
 const path = require( 'path' );
 const fs = require( 'fs' );
+const chalk = require( 'chalk' );
 const { runWpScriptsFiltered, runWpScripts, runNpmRunAll, getThemePackage } = require( '../utils/run' );
 
 /**
@@ -62,9 +64,9 @@ async function start( args ) {
 	}
 
 	// Show watch header with task count
-	console.log( '\x1b[36m\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m' );
-	console.log( `\x1b[36m\x1b[1m  Starting development mode (${tasks.length} watchers)\x1b[0m` );
-	console.log( '\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n' );
+	console.log( chalk.cyan( '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' ) );
+	console.log( chalk.cyan.bold( `  Starting development mode (${ tasks.length } watchers)` ) );
+	console.log( chalk.cyan( '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' ) );
 
 	if ( tasks.length > 1 ) {
 		// Run multiple watch tasks in parallel using npm-run-all
@@ -91,7 +93,7 @@ async function start( args ) {
  * @return {Promise<void>}
  */
 async function watchScripts( args ) {
-	console.log( '\x1b[36m\x1b[1m\n► WATCH 1: Scripts and styles\x1b[0m' );
+	console.log( chalk.cyan.bold( '\n▶ WATCH 1: Scripts and styles' ) );
 	await runWpScriptsFiltered( 'start', args );
 }
 
@@ -115,11 +117,19 @@ async function watchScripts( args ) {
  * @return {Promise<void>}
  */
 async function watchThemeJson( args ) {
-	console.log( '\x1b[36m\x1b[1m\n► WATCH 2: Theme.json changes\x1b[0m' );
+	console.log( chalk.cyan.bold( '\n▶ WATCH 2: Theme.json changes' ) );
 	const { runCommand } = require( '../utils/run' );
-	const nodemonPath = path.resolve( __dirname, '../../node_modules/.bin/nodemon' );
+	const nodemonPath = path.resolve(
+		__dirname,
+		'../../node_modules/.bin/nodemon'
+	);
 	const compilerPath = path.resolve( __dirname, '../compile-theme-json.mjs' );
-	await runCommand( nodemonPath, [ '--watch', 'src/theme-json', '--exec', `node ${ compilerPath }` ] );
+	await runCommand( nodemonPath, [
+		'--watch',
+		'src/theme-json',
+		'--exec',
+		`node ${ compilerPath }`,
+	] );
 }
 
 /**

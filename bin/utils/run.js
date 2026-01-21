@@ -28,11 +28,11 @@ const path = require( 'path' );
  * 3. Listens for close event to detect completion
  * 4. Rejects promise if exit code is non-zero
  *
- * @param {string} cmd - Command to run (e.g., 'node', 'npm', 'wp-scripts')
- * @param {Array<string>} cmdArgs - Command arguments (default: [])
- * @param {Object} options - Additional spawn options (default: {})
- * @param {string} options.cwd - Working directory (default: process.cwd())
- * @param {boolean} options.shell - Use shell (default: true)
+ * @param {string}        cmd           - Command to run (e.g., 'node', 'npm', 'wp-scripts')
+ * @param {Array<string>} cmdArgs       - Command arguments (default: [])
+ * @param {Object}        options       - Additional spawn options (default: {})
+ * @param {string}        options.cwd   - Working directory (default: process.cwd())
+ * @param {boolean}       options.shell - Use shell (default: true)
  * @return {Promise<void>} Resolves when command completes successfully
  * @throws {Error} If command exits with non-zero code
  *
@@ -51,7 +51,9 @@ function runCommand( cmd, cmdArgs = [], options = {} ) {
 
 		child.on( 'close', ( code ) => {
 			if ( code !== 0 ) {
-				reject( new Error( `Command failed with exit code ${ code }` ) );
+				reject(
+					new Error( `Command failed with exit code ${ code }` )
+				);
 			} else {
 				resolve();
 			}
@@ -72,8 +74,8 @@ function runCommand( cmd, cmdArgs = [], options = {} ) {
  * - Preserves error messages and warnings
  * - Uses '|| true' to prevent grep from causing non-zero exit
  *
- * @param {string} scriptCommand - wp-scripts command (e.g., 'start', 'build')
- * @param {Array<string>} scriptArgs - Additional arguments (default: [])
+ * @param {string}        scriptCommand - wp-scripts command (e.g., 'start', 'build')
+ * @param {Array<string>} scriptArgs    - Additional arguments (default: [])
  * @return {Promise<void>}
  *
  * @example
@@ -81,12 +83,17 @@ function runCommand( cmd, cmdArgs = [], options = {} ) {
  * await runWpScriptsFiltered('build', ['--mode=production']);
  */
 async function runWpScriptsFiltered( scriptCommand, scriptArgs = [] ) {
-	const wpScriptsPath = path.resolve( __dirname, '../../node_modules/.bin/wp-scripts' );
+	// Resolve wp-scripts bin path relative to the module
+	const wpScriptsPath = path.join(
+		require.resolve( '@wordpress/scripts/package.json' ),
+		'../bin/wp-scripts.js'
+	);
 	const allArgs = [ scriptCommand, '--color', ...scriptArgs ];
-	
+
 	// Use grep to filter out stack traces
+	// eslint-disable-next-line prettier/prettier
 	const cmd = `${ wpScriptsPath } ${ allArgs.join( ' ' ) } | grep -v '^    at ' || true`;
-	
+
 	await runCommand( cmd );
 }
 
@@ -96,15 +103,19 @@ async function runWpScriptsFiltered( scriptCommand, scriptArgs = [] ) {
  * Executes wp-scripts commands with full, unfiltered output.
  * Useful for debugging when you need to see complete stack traces.
  *
- * @param {string} scriptCommand - wp-scripts command (e.g., 'start', 'build')
- * @param {Array<string>} scriptArgs - Additional arguments (default: [])
+ * @param {string}        scriptCommand - wp-scripts command (e.g., 'start', 'build')
+ * @param {Array<string>} scriptArgs    - Additional arguments (default: [])
  * @return {Promise<void>}
  *
  * @example
  * await runWpScripts('build', ['--mode=production']);
  */
 async function runWpScripts( scriptCommand, scriptArgs = [] ) {
-	const wpScriptsPath = path.resolve( __dirname, '../../node_modules/.bin/wp-scripts' );
+	// Resolve wp-scripts bin path relative to the module
+	const wpScriptsPath = path.join(
+		require.resolve( '@wordpress/scripts/package.json' ),
+		'../bin/wp-scripts.js'
+	);
 	await runCommand( wpScriptsPath, [ scriptCommand, ...scriptArgs ] );
 }
 
@@ -115,9 +126,9 @@ async function runWpScripts( scriptCommand, scriptArgs = [] ) {
  * This is used for orchestrating complex build pipelines.
  *
  * @param {Array<string>} runArgs - Arguments for npm-run-all
- *   - Use ['--parallel', 'script1', 'script2'] for parallel execution
- *   - Use ['--sequential', 'script1', 'script2'] for sequential execution
- *   - Default is sequential if no flag provided
+ *                                - Use ['--parallel', 'script1', 'script2'] for parallel execution
+ *                                - Use ['--sequential', 'script1', 'script2'] for sequential execution
+ *                                - Default is sequential if no flag provided
  * @return {Promise<void>}
  *
  * @example
@@ -128,7 +139,11 @@ async function runWpScripts( scriptCommand, scriptArgs = [] ) {
  * await runNpmRunAll(['build:theme-json', 'build:scripts', 'build:i18n']);
  */
 async function runNpmRunAll( runArgs ) {
-	const npmRunAllPath = path.resolve( __dirname, '../../node_modules/.bin/npm-run-all' );
+	// Resolve npm-run-all bin path relative to the module
+	const npmRunAllPath = path.join(
+		require.resolve( 'npm-run-all/package.json' ),
+		'../bin/npm-run-all/index.js'
+	);
 	await runCommand( npmRunAllPath, runArgs );
 }
 
