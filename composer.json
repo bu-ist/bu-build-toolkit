@@ -8,7 +8,7 @@
     "phpcsstandards/phpcsutils": "^1.0",
     "phpcompatibility/phpcompatibility-wp": "*"
   },
-  "license": "GPL-2.0-or-later",
+  "license": "MIT",
   "authors": [
     {
       "name": "Boston University",
