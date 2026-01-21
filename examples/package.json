@@ -18,6 +18,7 @@
     "check-licenses": "bu-build check-licenses",
     "__DEVELOPMENT__": "===================================================================",
     "start": "bu-build start",
+    "watch:verbose": "bu-build watch:verbose",
     "watch:scripts": "bu-build watch:scripts",
     "watch:theme-json": "bu-build watch:theme-json",
     "__BLOCKS__": "=========================================================================",
@@ -45,7 +46,8 @@
     "build:clean": "bu-build build:clean",
     "build:wpi18n": "bu-build build:wpi18n",
     "build:wpmakepot": "bu-build build:wpmakepot",
-    "build:version": "bu-build build:version"
+    "build:version": "bu-build build:version",
+    "build:verbose": "bu-build build:verbose"
   },
   "eslintConfig": {
     "extends": "./node_modules/@bostonuniversity/bu-build-toolkit/config/.eslintrc.json"
