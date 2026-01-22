@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "bin": {
-    "bu-build": "./bin/bu-build.js"
+    "bu-build": "bin/bu-build.js"
   },
   "files": [
     "bin",
@@ -14,8 +14,7 @@
     "composer.json",
     "README.md"
   ],
-  "scripts": {
-  },
+  "scripts": {},
   "keywords": [
     "wordpress",
     "webpack",
@@ -31,7 +30,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/bu-ist/bu-build-toolkit"
+    "url": "git+https://github.com/bu-ist/bu-build-toolkit.git"
   },
   "dependencies": {
     "@wordpress/scripts": "~31.2.0",
