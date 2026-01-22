@@ -97,11 +97,21 @@ function createWebpackConfig( options ) {
 
 		module: {
 			rules: [
-				// Add babel-loader for @bostonuniversity packages in node_modules
+				// Add babel-loader for @bostonuniversity packages in node_modules.
+				// By default, babel-loader excludes all node_modules, but
+				// we need to transpile our packages for compatibility because our packages
+				// are not distributed as pre-transpiled code.
 				{
 					test: /\.(js|mjs)$/,
 					loader: require.resolve( 'babel-loader' ),
 					exclude: /node_modules\/(?!(@bostonuniversity)\/).*/,
+					options: {
+						presets: [
+							require.resolve(
+								'@wordpress/babel-preset-default'
+							),
+						],
+					},
 				},
 				{
 					test: /\.(sc|sa)ss$/,
