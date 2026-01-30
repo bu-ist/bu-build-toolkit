@@ -96,7 +96,7 @@ async function runWpScriptsFiltered( scriptCommand, scriptArgs = [] ) {
 
 	// Use grep to filter out stack traces
 	// eslint-disable-next-line prettier/prettier
-	const cmd = `${ wpScriptsPath } ${ allArgs.join( ' ' ) } | grep -v '^    at ' || true`;
+	const cmd = `"${ wpScriptsPath }" ${ allArgs.join( ' ' ) } | grep -v '^    at ' || true`;
 
 	await runCommand( cmd );
 }
@@ -120,7 +120,8 @@ async function runWpScripts( scriptCommand, scriptArgs = [] ) {
 		require.resolve( '@wordpress/scripts/package.json' ),
 		'../bin/wp-scripts.js'
 	);
-	await runCommand( wpScriptsPath, [ scriptCommand, ...scriptArgs ] );
+	const allArgs = [ scriptCommand, ...scriptArgs ];
+	await runCommand( `"${ wpScriptsPath }" ${ allArgs.join( ' ' ) }` );
 }
 
 /**
@@ -148,7 +149,7 @@ async function runNpmRunAll( runArgs ) {
 		require.resolve( 'npm-run-all/package.json' ),
 		'../bin/npm-run-all/index.js'
 	);
-	await runCommand( npmRunAllPath, runArgs );
+	await runCommand( `"${ npmRunAllPath }" ${ runArgs.join( ' ' ) }` );
 }
 
 /**

@@ -138,12 +138,7 @@ async function watchThemeJson( args ) {
 		'../../node_modules/.bin/nodemon'
 	);
 	const compilerPath = path.resolve( __dirname, '../compile-theme-json.mjs' );
-	await runCommand( nodemonPath, [
-		'--watch',
-		'src/theme-json',
-		'--exec',
-		`node ${ compilerPath }`,
-	] );
+	await runCommand( `"${ nodemonPath }" --watch src/theme-json --exec "node \\"${ compilerPath }\\""` );
 }
 
 /**

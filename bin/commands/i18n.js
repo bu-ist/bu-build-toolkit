@@ -106,7 +106,7 @@ async function buildWpi18n( args ) {
 		require.resolve( 'node-wp-i18n' ),
 		'../bin/wpi18n'
 	);
-	await runCommand( wpi18nPath, [ 'addtextdomain' ] );
+	await runCommand( `"${ wpi18nPath }" addtextdomain` );
 }
 
 /**
@@ -141,7 +141,7 @@ async function buildWpmakepot( args ) {
 		require.resolve( 'node-wp-i18n' ),
 		'../bin/wpi18n'
 	);
-	await runCommand( wpi18nPath, [ 'makepot', '--domain-path', 'languages' ] );
+	await runCommand( `"${ wpi18nPath }" makepot --domain-path languages` );
 }
 
 export { buildI18n, buildClean, buildWpi18n, buildWpmakepot };
