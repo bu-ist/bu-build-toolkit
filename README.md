@@ -465,6 +465,31 @@ The PHP linter:
 - Verifies PHP 7.4+ compatibility
 - Validates text domain usage
 
+### VSCode Integration
+
+The toolkit installs PHPCS in `node_modules/@bostonuniversity/bu-build-toolkit/` rather than the project root. This approach works with certain VSCode extensions that support configuring the path to composer.json and PHPCS binaries.
+
+#### Compatible Extensions
+
+**PHP Sniffer & Beautifier (phpsab)** - This extension supports configuring the composer.json path to point to the toolkit's location.
+
+To configure phpsab for use with the bu-build-toolkit:
+
+1. Install the [PHP Sniffer & Beautifier](https://marketplace.visualstudio.com/items?itemName=brapifra.phpsab) extension. (https://marketplace.visualstudio.com/items?itemName=obliviousharmony.vscode-php-codesniffer also works but has not been updated as recently)
+2. Add the following to your `.vscode/settings.json`:
+
+```json
+{
+  "phpsab.snifferEnable": true,
+  "phpsab.composerJsonPath": "./node_modules/@bostonuniversity/bu-build-toolkit/composer.json",
+  "phpsab.fixerEnable": true,
+}
+```
+
+**Note:** Other PHPCS extensions may not support this configuration and require PHPCS to be installed in the project root. The bu-build-toolkit's approach centralizes PHPCS management but may not be compatible with all VSCode extensions. 
+
+The [PHPCS extension by shevaua](https://marketplace.visualstudio.com/items?itemName=shevaua.phpcs) does NOT support this setup. That extension hasn't been updated in 6 years and should not be used: 
+
 ## Migration from Theme-Based Configuration
 
 If you're migrating from a theme that has its own build configuration:
