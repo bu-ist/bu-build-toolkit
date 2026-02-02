@@ -1,6 +1,6 @@
 {
   "name": "@bostonuniversity/bu-build-toolkit",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A centralized set of build tools for compiling WordPress themes and plugins built on top of @wordpress/scripts and webpack",
   "type": "module",
   "main": "index.js",
