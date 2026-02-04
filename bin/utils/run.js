@@ -46,9 +46,11 @@ const require = createRequire( import.meta.url );
  */
 function runCommand( cmd, cmdArgs = [], options = {} ) {
 	return new Promise( ( resolve, reject ) => {
+		// Default to shell: false for proper handling of paths with spaces.
+		// Callers can explicitly set shell: true in options when needed (e.g., for pipes).
 		const child = spawn( cmd, cmdArgs, {
 			stdio: 'inherit',
-			shell: true,
+			shell: false,
 			cwd: process.cwd(),
 			...options,
 		} );
@@ -94,11 +96,11 @@ async function runWpScriptsFiltered( scriptCommand, scriptArgs = [] ) {
 	);
 	const allArgs = [ scriptCommand, '--color', ...scriptArgs ];
 
-	// Use grep to filter out stack traces
+	// Use grep to filter out stack traces - requires shell mode for pipe
 	// eslint-disable-next-line prettier/prettier
 	const cmd = `"${ wpScriptsPath }" ${ allArgs.join( ' ' ) } | grep -v '^    at ' || true`;
 
-	await runCommand( cmd );
+	await runCommand( cmd, [], { shell: true } );
 }
 
 /**
