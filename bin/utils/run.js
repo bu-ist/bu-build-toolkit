@@ -121,7 +121,7 @@ async function runWpScripts( scriptCommand, scriptArgs = [] ) {
 		'../bin/wp-scripts.js'
 	);
 	const allArgs = [ scriptCommand, ...scriptArgs ];
-	await runCommand( `"${ wpScriptsPath }" ${ allArgs.join( ' ' ) }` );
+	await runCommand( 'node', [ wpScriptsPath, ...allArgs ] );
 }
 
 /**
@@ -149,7 +149,7 @@ async function runNpmRunAll( runArgs ) {
 		require.resolve( 'npm-run-all/package.json' ),
 		'../bin/npm-run-all/index.js'
 	);
-	await runCommand( `"${ npmRunAllPath }" ${ runArgs.join( ' ' ) }` );
+	await runCommand( 'node', [ npmRunAllPath, ...runArgs ] );
 }
 
 /**
