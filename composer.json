@@ -1,0 +1,27 @@
+{
+  "name": "bostonuniversity/bu-build-toolkit",
+  "description": "PHP development dependencies for BU WordPress themes and plugins",
+  "type": "library",
+  "require-dev": {
+    "wp-coding-standards/wpcs": "^3.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "phpcsstandards/phpcsutils": "^1.0",
+    "phpcompatibility/phpcompatibility-wp": "*"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jamie Reevior",
+      "email": "jreevior@bu.edu"
+    }
+  ],
+  "scripts": {
+    "phpcs": "phpcs",
+    "phpcbf": "phpcbf"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}

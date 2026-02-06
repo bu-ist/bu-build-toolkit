@@ -1,0 +1,30 @@
+# Ignore node modules
+node_modules/
+
+# Ignore build output (should be in themes/plugins, not here)
+build/
+dist/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore test coverage
+coverage/
+
+# Ignore composer vendor directory
+# Themes will install this via postinstall: cd node_modules/@bostonuniversity/bu-build-toolkit && composer install
+vendor/
+
+# Ignore example repos (for development only)
+example-repos/
